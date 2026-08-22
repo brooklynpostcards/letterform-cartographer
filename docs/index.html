@@ -31,7 +31,37 @@
   }
   h1{font-size:15px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; margin:0}
   header p{margin:0; font-size:13px; color:var(--rule); letter-spacing:.04em}
-  main{max-width:1500px; margin:0 auto; padding:8px 16px 40px}
+  .layout{
+    max-width:1500px; margin:0 auto; padding:8px 16px 40px;
+    display:grid; grid-template-columns:190px minmax(380px,560px) minmax(320px,1fr);
+    gap:28px; align-items:start;
+  }
+  .layout .colophon{grid-column:2 / -1}
+  @media (max-width:980px){
+    .layout{grid-template-columns:1fr; gap:14px}
+    .layout .colophon{grid-column:1}
+    .catalog{position:static; display:flex; flex-wrap:wrap; gap:4px 16px}
+    .catalog h2{width:100%; margin:10px 0 4px}
+  }
+  .catalog{
+    position:sticky; top:20px; font-size:12px; line-height:1.6;
+  }
+  .catalog h2{
+    font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--rule);
+    margin:18px 0 6px; font-weight:500;
+  }
+  .catalog h2:first-child{margin-top:0}
+  .catalog ul{list-style:none; margin:0; padding:0}
+  .catalog li{margin:0}
+  .catalog button{
+    all:unset; display:block; width:100%; cursor:pointer; color:var(--ink);
+    padding:3px 0 3px 12px; border-left:2px solid transparent;
+  }
+  .catalog button:hover, .catalog button:focus-visible{color:var(--accent); border-color:var(--dim)}
+  .catalog button.on{color:var(--accent); border-color:var(--accent); font-weight:600}
+  .catalog .ghost-row button{color:var(--ghost)}
+  .catalog .ghost-row button.on{color:var(--accent)}
+  main{min-width:0}
   .stage{width:100%; max-width:900px; margin:0 auto; display:block; touch-action:manipulation; aspect-ratio:1820/1010; height:auto}
   .hint{
     text-align:center; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
@@ -60,7 +90,7 @@
   .hotspot:focus-visible{stroke:var(--accent); stroke-width:3}
   .ghost-zone{fill:none; stroke:var(--ghost); stroke-width:1.5; stroke-dasharray:4 4; opacity:.5}
   .readout{
-    max-width:760px; margin:0 auto; min-height:150px; padding:20px 24px;
+    min-height:420px; padding:20px 24px;
     background:var(--panel); border-left:3px solid var(--accent);
   }
   .readout.is-ghost{border-left-color:var(--ghost)}
@@ -81,6 +111,10 @@
     display:block; margin-bottom:10px;
   }
   .readout.is-ghost .kind{color:var(--ghost)}
+  .readout .doc-role{
+    font-size:13px; font-style:italic; color:var(--rule); margin:0 0 14px;
+    padding-bottom:12px; border-bottom:1px solid var(--dim);
+  }
   .readout .body h3{margin:16px 0 6px; font-size:13px; font-weight:600; letter-spacing:.03em; color:var(--ink)}
   .readout .body h3:first-child{margin-top:0}
   .readout .body p{margin:0 0 10px; font-size:14px; line-height:1.6; color:var(--ink)}
@@ -108,19 +142,36 @@
 
 <header>
   <h1>Anatomy of a</h1>
-  <p>
-    <span class="doc-link" id="link-identity" tabindex="0" role="button">identity.md</span>
-    &middot; <span class="doc-link" id="link-rules" tabindex="0" role="button">rules.md</span>
-    &middot; Clarendon LT Std Roman, lowercase a &middot; 11 cards
-  </p>
+  <p>Clarendon LT Std Roman, lowercase a &middot; a cartographer catalog</p>
 </header>
 
-<main>
-  <svg class="stage" id="stage" viewBox="-620 -760 1820 1010" role="img"
-       aria-label="Interactive anatomical diagram of the lowercase letter a in Clarendon, sourced live from the objects/ markdown cards">
-    <g id="scene"></g>
-  </svg>
-  <p class="hint" id="hint">Hover a part of the letter — each card loads live from <code>objects/*.md</code></p>
+<div class="layout">
+  <aside class="catalog" id="catalog">
+    <h2>Territory</h2>
+    <ul>
+      <li><button type="button" data-doc="identity.md">identity.md</button></li>
+      <li><button type="button" data-doc="rules.md">rules.md</button></li>
+      <li><button type="button" data-doc="examples.md">examples.md</button></li>
+      <li><button type="button" data-doc="README.md">README.md</button></li>
+    </ul>
+    <h2>Reference</h2>
+    <ul>
+      <li><button type="button" data-doc="reference/card-types.md">card-types.md</button></li>
+      <li><button type="button" data-doc="reference/naming-collisions.md">naming-collisions.md</button></li>
+      <li><button type="button" data-doc="reference/walk-order.md">walk-order.md</button></li>
+      <li><button type="button" data-doc="reference/decisions.md">decisions.md</button></li>
+    </ul>
+    <h2>Objects (11)</h2>
+    <ul id="catalog-objects"></ul>
+  </aside>
+
+  <main>
+    <svg class="stage" id="stage" viewBox="-620 -760 1820 1010" role="img"
+         aria-label="Interactive anatomical diagram of the lowercase letter a in Clarendon, sourced live from the objects/ markdown cards">
+      <g id="scene"></g>
+    </svg>
+    <p class="hint" id="hint">Hover a part of the letter, or pick one from the catalog</p>
+  </main>
 
   <div class="readout" id="readout" aria-live="polite">
     <p class="empty">Every card names what a change <strong>hits</strong> — and the neighbour it
@@ -131,11 +182,8 @@
   <p class="colophon">
     Outline from Clarendon LT Std; labels set in Akzidenz-Grotesk Std and converted to outlines —
     no font software redistributed. Card text fetched live from <code>objects/*.md</code>.
-    <br>
-    <a href="../examples.md">examples.md</a><span class="sep">&middot;</span>
-    <a href="../reference/naming-collisions.md">naming-collisions.md</a>
   </p>
-</main>
+</div>
 
 <script>
 const CARD_FILES = ["stem","bowl","finial","ball-terminal","spur","counter",
@@ -209,6 +257,7 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   const S = document.getElementById("scene");
   const readout = document.getElementById("readout");
   const hint = document.getElementById("hint");
+  const catalog = document.getElementById("catalog");
   const NS = "http://www.w3.org/2000/svg";
   const el = (n,a={})=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
 
@@ -356,6 +405,7 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
       const n=document.getElementById(pre+"-"+current); if(n) n.classList.remove("on");
     });
     document.querySelectorAll('.metric.on').forEach(mm=>mm.classList.remove("on"));
+    catalog.querySelectorAll('button.on').forEach(b=>b.classList.remove("on"));
     current=null;
     readout.classList.remove("is-ghost");
     readout.innerHTML = '<p class="empty">Every card names what a change <strong>hits</strong> — and the neighbour it <strong>does not hit</strong>, even though that is the word everyone reaches for. The faint marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>';
@@ -381,45 +431,96 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
        <span class="kind">${m.status}${isGhost?" — GHOST":""} · ${m.type}</span>
        <h2>${m.name}</h2>
        <div class="body">${bodyHtml}</div>`;
-    readout.querySelectorAll('[data-card]').forEach(a=>{
+    wireBodyLinks(readout);
+  }
+  function wireBodyLinks(scope){
+    scope.querySelectorAll('[data-card]').forEach(a=>{
       a.addEventListener("click",e=>{ e.preventDefault(); show(a.getAttribute("data-card")); });
+    });
+    scope.querySelectorAll('[data-ref]').forEach(a=>{
+      a.addEventListener("click",e=>{ e.preventDefault(); showDoc("reference/"+a.getAttribute("data-ref")+".md"); });
     });
   }
 
   const docCache = {};
-  async function loadDoc(name){
-    if(docCache[name]) return docCache[name];
-    const res = await fetch("../" + name);
+  async function loadDoc(path){
+    if(docCache[path]) return docCache[path];
+    const res = await fetch("../" + path);
     const raw = await res.text();
-    const doc = {...parseFrontmatter(raw), path:name};
-    docCache[name] = doc;
+    const doc = {...parseFrontmatter(raw), path};
+    docCache[path] = doc;
     return doc;
   }
-  async function renderDoc(name){
-    if(current) clear();
-    current = "doc:"+name;
-    const doc = await loadDoc(name);
+  // Why this file exists, in one line each — shown above its content so it never
+  // reads as an orphaned document. Every one of these files' job is to help a
+  // reader navigate THIS glyph, not to stand on its own.
+  const DOC_ROLE = {
+    "identity.md": "who this cartographer is, and who reads the map it makes",
+    "rules.md": "how a part earns a card, and what live/leftover/ghost mean here",
+    "examples.md": "the catalog itself — this diagram is that catalog, made hoverable",
+    "README.md": "how a stranger, human or model, is meant to walk this repo",
+    "reference/card-types.md": "the closed set of card shapes a part can take",
+    "reference/naming-collisions.md": "words a reader reaches for that mean something else here",
+    "reference/walk-order.md": "the exact hop order: catalog, one card, stop",
+    "reference/decisions.md": "judgment calls made while mapping this letter, and why",
+  };
+  async function renderDoc(path){
+    const doc = await loadDoc(path);
     hint.textContent = " ";
     readout.classList.remove("is-ghost");
     readout.innerHTML =
-      `<span class="src">${doc.path} — the cartographer's own instructions, not a part card</span>
+      `<span class="src">${doc.path}</span>
+       <span class="kind">Instructions for reading the map, not a part of the letter</span>
+       <p class="doc-role">${DOC_ROLE[path] || ""}</p>
        <div class="body">${mdToHtml(doc.body)}</div>`;
+    wireBodyLinks(readout);
   }
   function show(id){
     if(current === id) return;
     if(current) clear();
     current = id;
+    setCatalogActive(id);
     render(id);
   }
-
-  const idLink = document.getElementById("link-identity");
-  const rulesLink = document.getElementById("link-rules");
-  idLink.addEventListener("pointerenter", ()=>renderDoc("identity.md"));
-  idLink.addEventListener("focus", ()=>renderDoc("identity.md"));
-  idLink.addEventListener("click", e=>{e.preventDefault(); renderDoc("identity.md");});
-  rulesLink.addEventListener("pointerenter", ()=>renderDoc("rules.md"));
-  rulesLink.addEventListener("focus", ()=>renderDoc("rules.md"));
-  rulesLink.addEventListener("click", e=>{e.preventDefault(); renderDoc("rules.md");});
+  function showDoc(path){
+    const id = "doc:"+path;
+    if(current === id) return;
+    if(current) clear();
+    current = id;
+    setCatalogActive(id);
+    renderDoc(path);
+  }
+  function setCatalogActive(id){
+    catalog.querySelectorAll('button.on').forEach(b=>b.classList.remove("on"));
+    const sel = id.startsWith("doc:")
+      ? `button[data-doc="${id.slice(4)}"]` : `button[data-card="${id}"]`;
+    const btn = catalog.querySelector(sel);
+    if(btn) btn.classList.add("on");
+  }
+  // ---- populate + wire the catalog panel ----
+  const objList = document.getElementById("catalog-objects");
+  CARD_FILES.forEach(id=>{
+    const m = byId[id].meta;
+    const row = document.createElement("li");
+    if(m.status==="ghost") row.className = "ghost-row";
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.dataset.card = id;
+    btn.textContent = m.name + (m.status==="ghost" ? " (ghost)" : m.status==="leftover" ? " (leftover)" : "");
+    row.appendChild(btn);
+    objList.appendChild(row);
+  });
+  catalog.querySelectorAll("button[data-card]").forEach(btn=>{
+    const id = btn.dataset.card;
+    btn.addEventListener("pointerenter", ()=>show(id));
+    btn.addEventListener("focus", ()=>show(id));
+    btn.addEventListener("click", ()=>show(id));
+  });
+  catalog.querySelectorAll("button[data-doc]").forEach(btn=>{
+    const path = btn.dataset.doc;
+    btn.addEventListener("pointerenter", ()=>showDoc(path));
+    btn.addEventListener("focus", ()=>showDoc(path));
+    btn.addEventListener("click", ()=>showDoc(path));
+  });
 });
 </script>
 </body>
