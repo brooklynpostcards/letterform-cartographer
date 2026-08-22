@@ -29,7 +29,7 @@
   body{
     margin:0; background:var(--bg); color:var(--ink);
     font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   }
   header{
     padding:16px 32px; max-width:1500px; margin:0 auto;
@@ -124,7 +124,7 @@
   /* text-wrap:pretty (progressive enhancement -- ignored where unsupported) asks the
      line-breaker to look ahead across the whole paragraph so it never strands a single
      short word alone on the last line. */
-  .readout .body p{margin:0 0 10px; font-size:14px; line-height:1.6; color:var(--ink); text-wrap:pretty}
+  .readout .body p{margin:0 0 10px; font-size:14px; line-height:1.6; color:var(--ink); text-wrap:pretty; max-width:70ch}
   .readout .body strong{font-weight:600}
   .readout .body a{color:var(--accent); text-decoration:underline; cursor:pointer}
   .empty{color:var(--rule); font-size:14px; line-height:1.55; margin:0; text-wrap:pretty}
