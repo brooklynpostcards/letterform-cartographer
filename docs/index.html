@@ -4,20 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Anatomy of a — Clarendon</title>
+<meta name="description" content="A hoverable system map of the lowercase a in Clarendon LT Std -- 11 anatomical parts, each a live card cited against the real font outline.">
+<meta name="theme-color" content="#14110d">
 <style>
   :root{
     --bg:#f4f1ea; --ink:#14110d; --dim:#b9b2a4; --accent:#c0392b;
-    --rule:#8c8577; --panel:#e8e3d8; --ghost:#8c8577;
+    /* --rule/--ghost: WCAG AA text contrast (>=4.5:1) against both --bg and --panel,
+       confirmed via Lighthouse -- the original values (#8c8577 light / #5c564a dark)
+       only ever passed as line/border colors, not as the readable text they're also
+       used for (catalog labels, hint text, ghost status). */
+    --rule:#655d50; --panel:#e8e3d8; --ghost:#655d50;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
       --bg:#14110d; --ink:#f4f1ea; --dim:#4a453c; --accent:#e8674f;
-      --rule:#5c564a; --panel:#1e1a15; --ghost:#5c564a;
+      --rule:#948a79; --panel:#1e1a15; --ghost:#948a79;
     }
   }
   :root[data-theme="dark"]{
     --bg:#14110d; --ink:#f4f1ea; --dim:#4a453c; --accent:#e8674f;
-    --rule:#5c564a; --panel:#1e1a15; --ghost:#5c564a;
+    --rule:#948a79; --panel:#1e1a15; --ghost:#948a79;
   }
   *{box-sizing:border-box}
   body{
@@ -33,7 +39,7 @@
   h1{font-size:15px; font-weight:500; letter-spacing:.08em; margin:0}
   header p{margin:0; font-size:13px; color:var(--rule); letter-spacing:.04em}
   .hamburger{display:none}
-  .catalog-close{display:none}
+  #catalog-close{display:none}
   .backdrop{display:none}
   .layout{
     max-width:1500px; margin:0 auto; padding:8px 16px 40px;
@@ -42,38 +48,6 @@
   }
   .layout .colophon{grid-column:2 / -1}
   main{position:sticky; top:76px}
-  @media (max-width:980px){
-    header{padding:14px 18px; top:0}
-    h1{order:1}
-    .hamburger{
-      all:unset; order:2; display:block; cursor:pointer; font-size:20px; line-height:1;
-      color:var(--ink); padding:4px 6px; border:1px solid var(--dim); border-radius:4px;
-    }
-    header p{order:3; width:100%; text-align:center}
-    .layout{
-      grid-template-columns:1fr; gap:14px;
-      grid-template-areas:"stage" "readout" "colophon";
-    }
-    .layout .colophon{grid-column:1; grid-area:colophon}
-    main{grid-area:stage; position:sticky; top:60px; background:var(--bg); z-index:10; padding-top:4px}
-    .readout{grid-area:readout}
-    .catalog{
-      position:fixed; inset:0 auto 0 0; width:min(320px,84vw); z-index:200;
-      background:var(--panel); padding:24px 20px; overflow-y:auto;
-      transform:translateX(-100%); transition:transform .22s ease;
-      box-shadow:2px 0 24px rgba(0,0,0,.35);
-    }
-    .catalog.open{transform:translateX(0)}
-    .backdrop{
-      display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:150;
-    }
-    .backdrop.open{display:block}
-    .catalog-close{
-      all:unset; display:block; cursor:pointer; margin-bottom:14px; font-size:12px;
-      letter-spacing:.1em; text-transform:uppercase; color:var(--rule); border:1px solid var(--dim);
-      padding:4px 10px; border-radius:4px; width:max-content;
-    }
-  }
   .catalog{
     position:sticky; top:76px; font-size:12px; line-height:1.6;
   }
@@ -163,6 +137,52 @@
   }
   .colophon a{color:inherit}
   .colophon .sep{margin:0 6px}
+
+  /* Mobile overrides live last on purpose: several rules above (e.g. .catalog button,
+     .catalog-close, main) are declared unconditionally further up the sheet, and a
+     media-query block placed earlier in source order loses the cascade to an
+     unconditional rule that comes after it even when the media condition still
+     matches. Keeping every @media(max-width:980px) rule here guarantees it wins. */
+  @media (max-width:980px){
+    header{padding:14px 18px; top:0}
+    h1{order:1}
+    .hamburger{
+      all:unset; order:2; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; font-size:20px; line-height:1; width:44px; height:44px;
+      color:var(--ink); border:1px solid var(--dim); border-radius:6px;
+    }
+    header p{order:3; width:100%; text-align:center}
+    .layout{
+      grid-template-columns:1fr; gap:14px;
+      grid-template-areas:"stage" "readout" "colophon";
+    }
+    .layout .colophon{grid-column:1; grid-area:colophon}
+    main{grid-area:stage; position:sticky; top:60px; background:var(--bg); z-index:10; padding-top:4px}
+    .readout{grid-area:readout}
+    .catalog{
+      position:fixed; inset:0 auto 0 0; width:min(320px,84vw); z-index:200;
+      background:var(--panel); padding:24px 20px; overflow-y:auto; font-size:14px;
+      transform:translateX(-100%); transition:transform .22s ease;
+      box-shadow:2px 0 24px rgba(0,0,0,.35);
+    }
+    .catalog.open{transform:translateX(0)}
+    .catalog button{
+      box-sizing:border-box; padding:2px 0 2px 12px; min-height:40px;
+      display:flex; align-items:center;
+    }
+    .backdrop{
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:150;
+    }
+    .backdrop.open{display:block}
+    /* #catalog-close, not .catalog-close: this button is itself inside .catalog, so the
+       class selector alone (specificity 0,1,0) loses to .catalog button (0,1,1) -- the ID
+       is what reliably wins regardless of source order or which rule this sits near. */
+    #catalog-close{
+      all:unset; display:flex; align-items:center; cursor:pointer; margin-bottom:10px; font-size:13px;
+      letter-spacing:.1em; text-transform:uppercase; color:var(--rule); border:1px solid var(--dim);
+      padding:10px 14px; min-height:44px; border-radius:6px; width:max-content;
+    }
+  }
 </style>
 </head>
 <body>
@@ -439,11 +459,12 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     hs.setAttribute("tabindex","0");
     hs.setAttribute("role","button");
     hs.setAttribute("aria-label",m.name);
-    const on = ()=>show(m.id), off = ()=>clear();
+    // No pointerleave/blur handler on purpose: the last hovered or focused part stays
+    // shown when the pointer moves away, so the reader can actually read the card
+    // instead of it vanishing the instant they're not directly over the hotspot.
+    const on = ()=>show(m.id);
     hs.addEventListener("pointerenter",on);
-    hs.addEventListener("pointerleave",off);
     hs.addEventListener("focus",on);
-    hs.addEventListener("blur",off);
     hs.addEventListener("click",e=>{e.preventDefault();on();});
     S.appendChild(hs);
   });

@@ -10,6 +10,10 @@ A system map of one glyph: the lowercase **a** in Clarendon LT Std Roman. Eleven
 
 A glyph outline is just point coordinates. "Bowl," "counter," "spur" are names a human draws around ranges of that data — nothing in a font file labels itself. This repo is that labeling, done once, cited against both the real extracted outline (`fontTools`) and a loaded typography reference skill, so nobody has to re-derive it by eye.
 
+## The one ghost, explained up front
+
+Clarendon is a slab serif — that's the first and often only thing anyone knows about it, and it creates a confident, wrong expectation: that every stroke in the face ends in a bracketed slab foot. This lowercase `a` doesn't. Its stem ends in a curved spur, its finial ends in a ball terminal, and no foot serif exists anywhere on the letter. That's not a simplification or an artistic choice being described loosely — it's a fact about the actual outline, verified against a second independent Clarendon after the first extraction was nearly discarded as corrupt for lacking the very serif this README just told you not to expect. See [`objects/foot-serif.md`](objects/foot-serif.md) for the full account.
+
 ## How a stranger — or a cold AI session — uses this
 
 1. Read `identity.md` and `rules.md` once. They're short.

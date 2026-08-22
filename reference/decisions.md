@@ -73,3 +73,13 @@ Logged per `icm-md-writer`'s Decision Record shape — so a later session doesn'
 **Rationale:** A rectangle has flat sides, so any edge that crosses a stroke does so as a dead-straight cut — the artifact that made `spur` look like a box. An ellipse has no flat sides: wherever its boundary crosses the stroke, it does so at an angle, which reads as a rounded, deliberate highlight rather than a pasted-on shape, while staying exactly as hard-edged and "measured" as the rest of the diagram. `stem` is excluded because it's genuinely a straight vertical stroke — a rect is the anatomically correct shape there, not a compromise.
 
 **Consequences:** `objects/bowl.md`, `objects/finial.md`, `objects/spur.md` frontmatter changed `region.shape` from `rect` to `ellipse` (same `x`/`y`/`w`/`h` — now read as an ellipse's bounding box, `cx`/`cy` at its center, `rx`/`ry` at half its width/height). `docs/index.html` gained a shared `regionShapeEl(r)` helper so the clip-path defs, the highlight fill/punch, and the hotspot all build the identical rect/circle/ellipse from one place instead of three separately-maintained branches — the kind of duplication that let the coordinate-space bug (two entries up) go unnoticed as long as it did. The blur filter and per-card masks were removed entirely.
+
+---
+
+**Decision:** Pull `stem`'s left edge in from x=320 to x=328, narrowing its region from 120 to 112 wide.
+
+**Context:** `stem`'s region and `counter`'s bounds (x=157–323) overlapped by 3 units (320–323). The counter-punch (two entries up) already prevents solid fill from painting over the counter's true hole even there, so this was never a color-accuracy bug — but a 3-unit sliver where a rounded-rect corner nearly grazes a curved hole is exactly the kind of imprecision that reads as visually unsettled up close, and it was flagged as such.
+
+**Rationale:** `stem` and `counter` genuinely share a border in the anatomy — `objects/stem.md`'s own Hits line says so ("the stem's left edge is also the counter's right wall"). The fix isn't to deny that adjacency, only to stop rendering it as a near-miss. Re-running the ink-ratio check at the pulled-in bounds (x=328, w=112) found 100% ink coverage, tighter than the original 120-wide region's 92% — the 3 units being trimmed were never solid stem ink at this height anyway.
+
+**Consequences:** `objects/stem.md` region width changed 120→112, x 320→328. Anchor (380,210) re-confirmed on-ink. No prose changes needed — the card's cited ink range (x=324–440 at y=210) was already accurate; only the rendering region, a deliberately conservative subset of it, moved.
