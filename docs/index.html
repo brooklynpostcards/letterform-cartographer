@@ -68,7 +68,7 @@
     color:var(--rule); padding:4px 0 18px;
   }
   .glyph-base{fill:var(--dim); transition:fill .25s ease}
-  .glyph-hi{fill:var(--accent); opacity:0; transition:opacity .18s ease}
+  .glyph-hi{opacity:0; transition:opacity .18s ease}
   .glyph-hi.on{opacity:1}
   .counter-hi{fill:var(--accent); opacity:0; transition:opacity .18s ease}
   .counter-hi.on{opacity:.55}
@@ -264,13 +264,17 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   const byId = {}; cards.forEach(c=>byId[c.meta.id]=c);
 
   // ---- defs: clip paths for stroke highlights ----
+  // The clipped path (g.outer) carries transform="scale(1,-1)" and its `d` is in raw,
+  // un-flipped font units (y-up). With clipPathUnits="userSpaceOnUse", the clip geometry
+  // is evaluated in that SAME local coordinate system as the element's own d/transform —
+  // not the parent's flipped screen space — so it must use raw font-space y, not -y.
   const defs = el("defs");
   cards.forEach(c=>{
     const r = c.meta.region;
     if(!r || (r.shape!=="rect" && r.shape!=="circle")) return;
     const cp = el("clipPath",{id:"clip-"+c.meta.id, clipPathUnits:"userSpaceOnUse"});
-    if(r.shape==="circle") cp.appendChild(el("circle",{cx:r.cx, cy:-r.cy, r:r.r}));
-    else cp.appendChild(el("rect",{x:r.x, y:-(r.y+r.h), width:r.w, height:r.h}));
+    if(r.shape==="circle") cp.appendChild(el("circle",{cx:r.cx, cy:r.cy, r:r.r}));
+    else cp.appendChild(el("rect",{x:r.x, y:r.y, width:r.w, height:r.h}));
     defs.appendChild(cp);
   });
   S.appendChild(defs);
@@ -299,8 +303,16 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     } else if(m.id==="aperture"){
       node = el("circle",{cx:r.cx, cy:-r.cy, r:r.r, class:"counter-hi", id:"hi-"+m.id});
     } else if(r.shape==="rect" || r.shape==="circle"){
-      node = el("path",{d:g.outer, class:"glyph-hi", id:"hi-"+m.id,
-                        "clip-path":"url(#clip-"+m.id+")", transform:"scale(1,-1)"});
+      // A group, not a bare path: the fill plus a counter-colored "punch" clipped the
+      // same way, so a stroke's highlight never paints solid over the counter's hole —
+      // bowl and counter are different objects even where their regions overlap.
+      node = el("g",{class:"glyph-hi", id:"hi-"+m.id});
+      const fillPath = el("path",{d:g.outer, "clip-path":"url(#clip-"+m.id+")", transform:"scale(1,-1)"});
+      fillPath.setAttribute("fill","var(--accent)");
+      const punch = el("path",{d:g.counter, "clip-path":"url(#clip-"+m.id+")", transform:"scale(1,-1)"});
+      punch.setAttribute("fill","var(--bg)");
+      node.appendChild(fillPath);
+      node.appendChild(punch);
     } else { return; } // metric: no fill highlight, just the guide line
     S.appendChild(node);
   });
