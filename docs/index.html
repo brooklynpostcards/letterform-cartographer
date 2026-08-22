@@ -628,6 +628,10 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   backdrop.addEventListener("click", closeCatalog);
   catalogCloseBtn.addEventListener("click", closeCatalog);
   document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeCatalog(); });
+
+  // identity.md first: who the cartographer is, before anything else -- the front
+  // door, not the empty placeholder.
+  showDoc("identity.md");
 });
 </script>
 </body>
