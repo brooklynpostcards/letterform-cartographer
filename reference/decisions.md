@@ -37,3 +37,15 @@ Logged per `icm-md-writer`'s Decision Record shape — so a later session doesn'
 **Rationale:** If one hand-placed region was wrong, the others were built the same way and warranted the same check, not just the one a user happened to notice. All five stroke anchors were re-verified by point-in-polygon; four (bowl, finial, ball terminal, spur) already sat on real ink, but finial's region rectangle was tightened to match its actual ink ratio (~52% vs. stem's original ~0%). A rectangle can't perfectly bound a curved stroke — finial and bowl both land near 50% ink coverage even correctly fitted, because their concave sides necessarily pull in some background. That's expected for a rect clip on a curved letterform, not a defect.
 
 **Consequences:** `objects/stem.md` and `objects/finial.md` were rewritten with corrected `anchor`/`region` frontmatter and corrected prose (the old stem card's claim that its right edge reached x=556 was wrong and is called out in the card itself rather than silently fixed).
+
+---
+
+**Decision:** Cap `stem`'s region at y≥165 and `spur`'s at y≤165, instead of letting both run through y=60–165.
+
+**Context:** The corrected stem region above still spanned y=60–355, which overlaps `spur`'s region (y=−22–190) across x=332–440 — the exact band where the spur's curl lifts off the stem's base. Hotspots are layered in DOM order, so within that overlap `spur`'s hotspot (added later) always won, making `stem` unreachable by hover in its lower third even though its region rectangle was, on paper, mostly on-ink.
+
+**Options considered:** Reorder the DOM so stem paints last (fixes the symptom, not the cause — just flips which part becomes unreachable); shrink one region arbitrarily; split the y-range at the actual point the two strokes' ink separates.
+
+**Rationale:** The segment scan (`reference/decisions.md`'s earlier entry) shows the spur's ink exists as an isolated island separate from the stem only below y≈165; above that, only the stem's own segment continues. Splitting the two regions at y=165 removes the overlap entirely rather than papering over it with z-order.
+
+**Consequences:** `objects/stem.md` region height shrank to 185 (y:165–350); `objects/spur.md` region height shrank to 187 (y:−22–165). Both anchors re-verified on-ink after the change.

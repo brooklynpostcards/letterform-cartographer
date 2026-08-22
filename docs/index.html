@@ -42,14 +42,15 @@
   .glyph-hi.on{opacity:1}
   .counter-hi{fill:var(--accent); opacity:0; transition:opacity .18s ease}
   .counter-hi.on{opacity:.55}
-  .metric{stroke:var(--rule); stroke-width:1.5; opacity:0; transition:opacity .2s ease}
+  .metric{stroke:var(--rule); stroke-width:1.5; stroke-dasharray:6 6; opacity:0; transition:opacity .2s ease}
   .metric.on{opacity:.55}
   .leader{
+    /* Straight, solid — only the reference marks (metrics, ghost) get to be dashed. */
     stroke:var(--accent); stroke-width:2.5; fill:none; stroke-linecap:round;
     opacity:0; transition:opacity .16s ease;
   }
   .leader.on{opacity:1}
-  .leader.ghost-leader{stroke:var(--ghost)}
+  .leader.ghost-leader{stroke:var(--ghost); stroke-dasharray:5 5}
   .dot{fill:var(--accent); opacity:0; transition:opacity .16s ease}
   .dot.on{opacity:1}
   .label-art{fill:var(--ink); opacity:0; transition:opacity .15s ease}
@@ -57,7 +58,7 @@
   .label-art.ghost-label.on{fill:var(--ghost); opacity:.85}
   .hotspot{fill:transparent; cursor:pointer; outline:none}
   .hotspot:focus-visible{stroke:var(--accent); stroke-width:3}
-  .ghost-zone{fill:none; stroke:var(--ghost); stroke-width:1.5; opacity:.35}
+  .ghost-zone{fill:none; stroke:var(--ghost); stroke-width:1.5; stroke-dasharray:4 4; opacity:.5}
   .readout{
     max-width:760px; margin:0 auto; min-height:150px; padding:20px 24px;
     background:var(--panel); border-left:3px solid var(--accent);
@@ -91,20 +92,12 @@
     cursor:pointer; border-bottom:1px dotted var(--rule); padding-bottom:1px;
   }
   .doc-link:hover, .doc-link:focus-visible{color:var(--accent); border-color:var(--accent)}
-  .flank{
-    display:grid; grid-template-columns:1fr min(900px,100%) 1fr; gap:28px;
-    align-items:start; margin-top:30px;
+  .colophon{
+    max-width:600px; margin:34px auto 0; text-align:center;
+    font-size:11px; line-height:1.7; color:var(--rule);
   }
-  .flank-copy{
-    font-size:11px; line-height:1.7; color:var(--rule); padding-top:6px;
-  }
-  .flank-copy a{color:inherit}
-  .flank-copy.right{text-align:right}
-  @media (max-width:1180px){
-    .flank{grid-template-columns:1fr; gap:14px}
-    .flank-copy.right{text-align:left}
-    .flank-copy{grid-column:1; max-width:900px; margin:0 auto}
-  }
+  .colophon a{color:inherit}
+  .colophon .sep{margin:0 6px}
   @media (max-width:700px){
     header{padding:20px 18px 0}
     .readout{margin:0 2px}
@@ -135,21 +128,13 @@
       The faint marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>
   </div>
 
-  <div class="flank">
-    <p class="flank-copy">
-      Glyph outline extracted from Clarendon LT Std Roman; on-diagram labels set in Akzidenz-Grotesk
-      Std Medium and converted to outlines — no font software is redistributed. Clarendon is a
-      trademark of its respective owner; Akzidenz-Grotesk is a trademark of Berthold.
-    </p>
-    <div></div>
-    <p class="flank-copy right">
-      Card text is fetched live from this repo's own <code>objects/*.md</code> files, system-font
-      rendered. <br>
-      <a href="../examples.md">examples.md</a> &middot;
-      <a href="../rules.md">rules.md</a> &middot;
-      <a href="../reference/naming-collisions.md">naming-collisions.md</a>
-    </p>
-  </div>
+  <p class="colophon">
+    Outline from Clarendon LT Std; labels set in Akzidenz-Grotesk Std and converted to outlines —
+    no font software redistributed. Card text fetched live from <code>objects/*.md</code>.
+    <br>
+    <a href="../examples.md">examples.md</a><span class="sep">&middot;</span>
+    <a href="../reference/naming-collisions.md">naming-collisions.md</a>
+  </p>
 </main>
 
 <script>

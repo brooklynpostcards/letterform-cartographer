@@ -4,7 +4,7 @@ name: Stem
 type: stroke
 status: live
 anchor: [380, 210]
-region: {shape: rect, x: 320, y: 60, w: 120, h: 295}
+region: {shape: rect, x: 320, y: 165, w: 120, h: 185}
 ---
 
 # Stem
