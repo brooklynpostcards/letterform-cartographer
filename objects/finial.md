@@ -3,8 +3,8 @@ id: finial
 name: Finial
 type: stroke
 status: live
-anchor: [300, 470]
-region: {shape: rect, x: 150, y: 352, w: 325, h: 150}
+anchor: [280, 465]
+region: {shape: rect, x: 150, y: 352, w: 280, h: 135}
 ---
 
 # Finial

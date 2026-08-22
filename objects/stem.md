@@ -3,16 +3,16 @@ id: stem
 name: Stem
 type: stroke
 status: live
-anchor: [500, 240]
-region: {shape: rect, x: 428, y: 52, w: 145, h: 306}
+anchor: [380, 210]
+region: {shape: rect, x: 320, y: 60, w: 120, h: 295}
 ---
 
 # Stem
 
-**What it is** — The main vertical, right side, running the full x-height. Everything else in this glyph hangs off it: the finial leaves it at the top, the spur leaves it at the bottom. Its left edge sits at x=441 and its right edge at x=556, which is also the glyph's advance width.
+**What it is** — The main vertical, right side, running from where the spur lifts off the baseline up to where the finial takes over. Not the full width of the glyph — the stem's own ink spans roughly x=302–440 at mid-height (narrowing slightly higher up), well short of the glyph's overall right edge at x=556, which belongs to the spur's separate curl, not the stem.
 
-**Status** — Live. Cited: outer contour walk, points 100–125, running (444,74) to (441,350).
+**Status** — Live. Cited: a point-in-polygon scan of the real outline at y=210 finds ink only across x=324–440 (an earlier draft of this card mistakenly cited the stem as reaching to x=556 — corrected after re-verifying against the actual contour; see `reference/decisions.md`).
 
-**Hits** — Stroke contrast against the bowl, the counter's width, and the set width of the glyph. Thicken the stem and all three move at once, because the stem is simultaneously the counter's right wall and the advance's right edge.
+**Hits** — Stroke contrast against the bowl and the counter's width, since the stem's left edge is also the counter's right wall. Thicken the stem and the counter narrows.
 
-**Does not hit** — The x-height. That is a font-wide vertical metric applied to every lowercase glyph; you cannot change it from inside this letter. See [x-height](x-height.md).
+**Does not hit** — The glyph's set width. That's set by the spur's own rightward curl, a separate stroke the stem doesn't touch — see [spur](spur.md). Also does not hit the x-height, a font-wide vertical metric applied to every lowercase glyph; you cannot change it from inside this letter. See [x-height](x-height.md).

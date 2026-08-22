@@ -42,23 +42,22 @@
   .glyph-hi.on{opacity:1}
   .counter-hi{fill:var(--accent); opacity:0; transition:opacity .18s ease}
   .counter-hi.on{opacity:.55}
-  .metric{stroke:var(--rule); stroke-width:1.5; stroke-dasharray:7 7; opacity:.5}
+  .metric{stroke:var(--rule); stroke-width:1.5; opacity:0; transition:opacity .2s ease}
+  .metric.on{opacity:.55}
   .leader{
-    stroke:var(--accent); stroke-width:3.5; fill:none; stroke-linecap:round;
-    stroke-dasharray:var(--len); stroke-dashoffset:var(--len);
+    stroke:var(--accent); stroke-width:2.5; fill:none; stroke-linecap:round;
+    opacity:0; transition:opacity .16s ease;
   }
-  .leader.on{animation:draw .42s cubic-bezier(.22,.8,.3,1) forwards}
-  .leader.ghost-leader{stroke:var(--ghost); stroke-dasharray:6 6 !important; animation:none !important; stroke-dashoffset:0 !important; opacity:.7}
-  @keyframes draw{to{stroke-dashoffset:0}}
-  .dot{fill:var(--accent); opacity:0; transform-box:fill-box; transform-origin:center}
-  .dot.on{animation:pop .42s cubic-bezier(.22,.8,.3,1) forwards}
-  @keyframes pop{0%{opacity:0;transform:scale(.2)}60%{opacity:1;transform:scale(1.25)}100%{opacity:1;transform:scale(1)}}
+  .leader.on{opacity:1}
+  .leader.ghost-leader{stroke:var(--ghost)}
+  .dot{fill:var(--accent); opacity:0; transition:opacity .16s ease}
+  .dot.on{opacity:1}
   .label-art{fill:var(--ink); opacity:0; transition:opacity .15s ease}
   .label-art.on{opacity:1}
   .label-art.ghost-label.on{fill:var(--ghost); opacity:.85}
   .hotspot{fill:transparent; cursor:pointer; outline:none}
-  .hotspot:focus-visible{stroke:var(--accent); stroke-width:3; stroke-dasharray:5 5}
-  .ghost-zone{fill:none; stroke:var(--ghost); stroke-width:2; stroke-dasharray:5 5; opacity:.55}
+  .hotspot:focus-visible{stroke:var(--accent); stroke-width:3}
+  .ghost-zone{fill:none; stroke:var(--ghost); stroke-width:1.5; opacity:.35}
   .readout{
     max-width:760px; margin:0 auto; min-height:150px; padding:20px 24px;
     background:var(--panel); border-left:3px solid var(--accent);
@@ -81,15 +80,31 @@
     display:block; margin-bottom:10px;
   }
   .readout.is-ghost .kind{color:var(--ghost)}
+  .readout .body h3{margin:16px 0 6px; font-size:13px; font-weight:600; letter-spacing:.03em; color:var(--ink)}
+  .readout .body h3:first-child{margin-top:0}
   .readout .body p{margin:0 0 10px; font-size:14px; line-height:1.6; color:var(--ink)}
   .readout .body strong{font-weight:600}
   .readout .body a{color:var(--accent); text-decoration:underline; cursor:pointer}
   .empty{color:var(--rule); font-size:14px; line-height:1.55; margin:0}
-  footer{
-    max-width:760px; margin:26px auto 0; font-size:11.5px; line-height:1.7;
-    color:var(--rule); border-top:1px solid var(--dim); padding-top:14px;
+  .doc-link{
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--rule);
+    cursor:pointer; border-bottom:1px dotted var(--rule); padding-bottom:1px;
   }
-  footer a{color:inherit}
+  .doc-link:hover, .doc-link:focus-visible{color:var(--accent); border-color:var(--accent)}
+  .flank{
+    display:grid; grid-template-columns:1fr min(900px,100%) 1fr; gap:28px;
+    align-items:start; margin-top:30px;
+  }
+  .flank-copy{
+    font-size:11px; line-height:1.7; color:var(--rule); padding-top:6px;
+  }
+  .flank-copy a{color:inherit}
+  .flank-copy.right{text-align:right}
+  @media (max-width:1180px){
+    .flank{grid-template-columns:1fr; gap:14px}
+    .flank-copy.right{text-align:left}
+    .flank-copy{grid-column:1; max-width:900px; margin:0 auto}
+  }
   @media (max-width:700px){
     header{padding:20px 18px 0}
     .readout{margin:0 2px}
@@ -100,7 +115,11 @@
 
 <header>
   <h1>Anatomy of a</h1>
-  <p>Clarendon LT Std Roman &middot; lowercase a &middot; cartographer catalog: 11 cards</p>
+  <p>
+    <span class="doc-link" id="link-identity" tabindex="0" role="button">identity.md</span>
+    &middot; <span class="doc-link" id="link-rules" tabindex="0" role="button">rules.md</span>
+    &middot; Clarendon LT Std Roman, lowercase a &middot; 11 cards
+  </p>
 </header>
 
 <main>
@@ -113,18 +132,24 @@
   <div class="readout" id="readout" aria-live="polite">
     <p class="empty">Every card names what a change <strong>hits</strong> — and the neighbour it
       <strong>does not hit</strong>, even though that is the word everyone reaches for.
-      The dashed marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>
+      The faint marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>
   </div>
 
-  <footer>
-    Glyph outline extracted from Clarendon LT Std Roman; on-diagram labels set in Akzidenz-Grotesk Std
-    Medium and converted to outlines — no font software is redistributed. Card text below the diagram is
-    fetched live from this repo's own <code>objects/*.md</code> files and rendered with a system font stack
-    (falls back gracefully; renders in real Akzidenz only on a machine that already has it installed).
-    Clarendon is a trademark of its respective owner; Akzidenz-Grotesk is a trademark of Berthold.
-    <br>Catalog: <a href="../examples.md">examples.md</a> &middot; Rules: <a href="../rules.md">rules.md</a>
-    &middot; Collisions: <a href="../reference/naming-collisions.md">reference/naming-collisions.md</a>
-  </footer>
+  <div class="flank">
+    <p class="flank-copy">
+      Glyph outline extracted from Clarendon LT Std Roman; on-diagram labels set in Akzidenz-Grotesk
+      Std Medium and converted to outlines — no font software is redistributed. Clarendon is a
+      trademark of its respective owner; Akzidenz-Grotesk is a trademark of Berthold.
+    </p>
+    <div></div>
+    <p class="flank-copy right">
+      Card text is fetched live from this repo's own <code>objects/*.md</code> files, system-font
+      rendered. <br>
+      <a href="../examples.md">examples.md</a> &middot;
+      <a href="../rules.md">rules.md</a> &middot;
+      <a href="../reference/naming-collisions.md">naming-collisions.md</a>
+    </p>
+  </div>
 </main>
 
 <script>
@@ -157,12 +182,17 @@ function parseFrontmatter(raw){
   });
   return {meta, body:m[2].trim()};
 }
-function mdToHtml(body, onLink){
+function mdToHtml(body, opts={}){
   const esc = s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  const lines = body.split(/\r?\n/)
-    .filter(l=>l.trim().length)
-    .filter(l=>!/^#+\s/.test(l.trim())); // headings folded into readout's own <h2>, drop from body
+  let lines = body.split(/\r?\n/).filter(l=>l.trim().length);
+  // cards: the first heading duplicates the readout's own <h2>{name}</h2> — drop just that one.
+  if(opts.skipFirstHeading){
+    const i = lines.findIndex(l=>/^#+\s/.test(l.trim()));
+    if(i>-1) lines.splice(i,1);
+  }
   return lines.map(line=>{
+    const h = line.trim().match(/^(#+)\s+(.*)$/);
+    if(h) return `<h3>${esc(h[2])}</h3>`;
     let html = esc(line);
     html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
     html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
@@ -211,9 +241,9 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   });
   S.appendChild(defs);
 
-  // ---- metrics layer ----
+  // ---- metrics layer (hidden until the matching card is hovered) ----
   const M = el("g");
-  const mline=(y,id)=>{M.appendChild(el("line",{x1:-380,y1:-y,x2:820,y2:-y,class:"metric","data-m":id}));};
+  const mline=(y,id)=>{M.appendChild(el("line",{x1:60,y1:-y,x2:820,y2:-y,class:"metric",id:"metric-"+id}));};
   mline(XH,"xh"); mline(0,"bl"); mline(483,"os"); mline(-15,"os2");
   S.appendChild(M);
 
@@ -271,7 +301,6 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     const d = `M${sx} ${sy} L${labelAnchorX} ${labelAnchorY}`;
     const path = el("path",{d, class:"leader", id:"ld-"+m.id});
     S.appendChild(path);
-    path.style.setProperty("--len", path.getTotalLength());
     S.appendChild(el("circle",{cx:sx, cy:sy, r:9, class:"dot", id:"dot-"+m.id}));
     if(art){
       const gl = el("g",{class:"label-art", id:"lb-"+m.id, transform:`translate(${lx} ${ly}) scale(${LSCALE} ${-LSCALE})`});
@@ -333,39 +362,34 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     ].map(([k,v])=>`<b>${k}:</b> ${v}`).join("\n");
   }
 
+  const METRIC_IDS = {"x-height":["xh"], "baseline":["bl"], "overshoot":["os","os2"]};
+
   let current=null;
   function clear(){
     if(!current) return;
     ["hi","ld","dot","lb"].forEach(pre=>{
       const n=document.getElementById(pre+"-"+current); if(n) n.classList.remove("on");
     });
-    document.querySelectorAll('.metric').forEach(mm=>mm.style.opacity="");
+    document.querySelectorAll('.metric.on').forEach(mm=>mm.classList.remove("on"));
     current=null;
     readout.classList.remove("is-ghost");
-    readout.innerHTML = '<p class="empty">Every card names what a change <strong>hits</strong> — and the neighbour it <strong>does not hit</strong>, even though that is the word everyone reaches for. The dashed marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>';
+    readout.innerHTML = '<p class="empty">Every card names what a change <strong>hits</strong> — and the neighbour it <strong>does not hit</strong>, even though that is the word everyone reaches for. The faint marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>';
     hint.innerHTML = 'Hover a part of the letter — each card loads live from <code>objects/*.md</code>';
   }
   function render(id){
     const card = byId[id]; if(!card) return;
     const m = card.meta;
-    ["ld","lb"].forEach(pre=>{
-      const n=document.getElementById(pre+"-"+id);
-      if(n){ n.classList.remove("on"); void n.getBoundingClientRect(); n.classList.add("on"); }
-    });
+    ["ld","lb"].forEach(pre=>{const n=document.getElementById(pre+"-"+id); if(n) n.classList.add("on");});
     if(id !== "foot-serif"){
       ["hi","dot"].forEach(pre=>{const n=document.getElementById(pre+"-"+id); if(n) n.classList.add("on");});
     }
-    if(m.region && m.region.shape==="metric"){
-      document.querySelectorAll('.metric').forEach(mm=>{
-        const t=mm.getAttribute("data-m");
-        const match = id==="overshoot" ? (t==="os"||t==="os2") : (id==="x-height"?t==="xh":t==="bl");
-        mm.style.opacity = match ? "1" : ".16";
-      });
-    }
+    (METRIC_IDS[id]||[]).forEach(t=>{
+      const n=document.getElementById("metric-"+t); if(n) n.classList.add("on");
+    });
     hint.textContent = " ";
     const isGhost = m.status === "ghost";
     readout.classList.toggle("is-ghost", isGhost);
-    const bodyHtml = mdToHtml(card.body);
+    const bodyHtml = mdToHtml(card.body, {skipFirstHeading:true});
     readout.innerHTML =
       `<span class="src">${card.path}</span>
        <span class="raw">${rawFrontmatter(m)}</span>
@@ -376,12 +400,41 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
       a.addEventListener("click",e=>{ e.preventDefault(); show(a.getAttribute("data-card")); });
     });
   }
+
+  const docCache = {};
+  async function loadDoc(name){
+    if(docCache[name]) return docCache[name];
+    const res = await fetch("../" + name);
+    const raw = await res.text();
+    const doc = {...parseFrontmatter(raw), path:name};
+    docCache[name] = doc;
+    return doc;
+  }
+  async function renderDoc(name){
+    if(current) clear();
+    current = "doc:"+name;
+    const doc = await loadDoc(name);
+    hint.textContent = " ";
+    readout.classList.remove("is-ghost");
+    readout.innerHTML =
+      `<span class="src">${doc.path} — the cartographer's own instructions, not a part card</span>
+       <div class="body">${mdToHtml(doc.body)}</div>`;
+  }
   function show(id){
     if(current === id) return;
     if(current) clear();
     current = id;
     render(id);
   }
+
+  const idLink = document.getElementById("link-identity");
+  const rulesLink = document.getElementById("link-rules");
+  idLink.addEventListener("pointerenter", ()=>renderDoc("identity.md"));
+  idLink.addEventListener("focus", ()=>renderDoc("identity.md"));
+  idLink.addEventListener("click", e=>{e.preventDefault(); renderDoc("identity.md");});
+  rulesLink.addEventListener("pointerenter", ()=>renderDoc("rules.md"));
+  rulesLink.addEventListener("focus", ()=>renderDoc("rules.md"));
+  rulesLink.addEventListener("click", e=>{e.preventDefault(); renderDoc("rules.md");});
 });
 </script>
 </body>

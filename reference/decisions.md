@@ -25,3 +25,15 @@ Logged per `icm-md-writer`'s Decision Record shape — so a later session doesn'
 **Rationale:** `glossary.md` does not define "Arch" at all. It defines **Finial** — "an ornamental terminal stroke at the top of characters such as *a* and *f*" — explicitly for this letter. It defines **Tail** only for Q, K, R, and g's loop, not for *a*; it defines **Spur** as "the terminal to the stem of a rounded letter," which is the correct fit. `rules.md` for this territory says a card must cite grounded terminology, not memory — using "Arch" and "Tail" would have violated this map's own rule.
 
 **Consequences:** `reference/naming-collisions.md` documents both swaps as the collision a reader is likely to hit first, since "arch" and "tail" are the words most people reach for by analogy to *n*/*m*/*h* and *g*/*Q* respectively.
+
+---
+
+**Decision:** Re-derive the stem and finial regions from a point-in-polygon scan of the real outline, replacing bounding boxes that were placed by eye.
+
+**Context:** Building the live diagram surfaced that `stem`'s hover region (`x: 428, y: 52, w: 145, h: 306`) mostly covered background, not ink — its anchor and clip rectangle had been eyeballed from the earlier text-only coordinate walk rather than checked against the actual filled shape. A systematic scan (`fontTools` outline, ray-casting point-in-polygon, counter treated as a hole) found the stem's real ink at mid-height spans only x=302–440, not the x=428–573 range the original card used — the card had conflated the glyph's overall right bound (556, which belongs to the spur) with the stem's own edge.
+
+**Options considered:** Patch the one card in isolation vs. re-scan every stroke card's anchor and region against the same method.
+
+**Rationale:** If one hand-placed region was wrong, the others were built the same way and warranted the same check, not just the one a user happened to notice. All five stroke anchors were re-verified by point-in-polygon; four (bowl, finial, ball terminal, spur) already sat on real ink, but finial's region rectangle was tightened to match its actual ink ratio (~52% vs. stem's original ~0%). A rectangle can't perfectly bound a curved stroke — finial and bowl both land near 50% ink coverage even correctly fitted, because their concave sides necessarily pull in some background. That's expected for a rect clip on a curved letterform, not a defect.
+
+**Consequences:** `objects/stem.md` and `objects/finial.md` were rewritten with corrected `anchor`/`region` frontmatter and corrected prose (the old stem card's claim that its right edge reached x=556 was wrong and is called out in the card itself rather than silently fixed).
