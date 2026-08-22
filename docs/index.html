@@ -26,26 +26,56 @@
     -webkit-font-smoothing:antialiased;
   }
   header{
-    padding:28px 32px 0; max-width:1500px; margin:0 auto;
-    display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between;
+    padding:16px 32px; max-width:1500px; margin:0 auto;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:50; background:var(--bg);
   }
-  h1{font-size:15px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; margin:0}
-  h1 .lc{text-transform:none}
+  h1{font-size:15px; font-weight:500; letter-spacing:.08em; margin:0}
   header p{margin:0; font-size:13px; color:var(--rule); letter-spacing:.04em}
+  .hamburger{display:none}
+  .catalog-close{display:none}
+  .backdrop{display:none}
   .layout{
     max-width:1500px; margin:0 auto; padding:8px 16px 40px;
     display:grid; grid-template-columns:190px minmax(380px,560px) minmax(320px,1fr);
     gap:28px; align-items:start;
   }
   .layout .colophon{grid-column:2 / -1}
+  main{position:sticky; top:76px}
   @media (max-width:980px){
-    .layout{grid-template-columns:1fr; gap:14px}
-    .layout .colophon{grid-column:1}
-    .catalog{position:static; display:flex; flex-wrap:wrap; gap:4px 16px}
-    .catalog h2{width:100%; margin:10px 0 4px}
+    header{padding:14px 18px; top:0}
+    h1{order:1}
+    .hamburger{
+      all:unset; order:2; display:block; cursor:pointer; font-size:20px; line-height:1;
+      color:var(--ink); padding:4px 6px; border:1px solid var(--dim); border-radius:4px;
+    }
+    header p{order:3; width:100%; text-align:center}
+    .layout{
+      grid-template-columns:1fr; gap:14px;
+      grid-template-areas:"stage" "readout" "colophon";
+    }
+    .layout .colophon{grid-column:1; grid-area:colophon}
+    main{grid-area:stage; position:sticky; top:60px; background:var(--bg); z-index:10; padding-top:4px}
+    .readout{grid-area:readout}
+    .catalog{
+      position:fixed; inset:0 auto 0 0; width:min(320px,84vw); z-index:200;
+      background:var(--panel); padding:24px 20px; overflow-y:auto;
+      transform:translateX(-100%); transition:transform .22s ease;
+      box-shadow:2px 0 24px rgba(0,0,0,.35);
+    }
+    .catalog.open{transform:translateX(0)}
+    .backdrop{
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:150;
+    }
+    .backdrop.open{display:block}
+    .catalog-close{
+      all:unset; display:block; cursor:pointer; margin-bottom:14px; font-size:12px;
+      letter-spacing:.1em; text-transform:uppercase; color:var(--rule); border:1px solid var(--dim);
+      padding:4px 10px; border-radius:4px; width:max-content;
+    }
   }
   .catalog{
-    position:sticky; top:20px; font-size:12px; line-height:1.6;
+    position:sticky; top:76px; font-size:12px; line-height:1.6;
   }
   .catalog h2{
     font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--rule);
@@ -133,21 +163,21 @@
   }
   .colophon a{color:inherit}
   .colophon .sep{margin:0 6px}
-  @media (max-width:700px){
-    header{padding:20px 18px 0}
-    .readout{margin:0 2px}
-  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Anatomy of <span class="lc">a</span></h1>
+  <button type="button" class="hamburger" id="hamburger" aria-label="Open catalog" aria-expanded="false">&#9776;</button>
+  <h1>anatomy of a</h1>
   <p>Clarendon LT Std Roman, lowercase a &middot; a cartographer catalog</p>
 </header>
 
+<div class="backdrop" id="backdrop"></div>
+
 <div class="layout">
   <aside class="catalog" id="catalog">
+    <button type="button" class="catalog-close" id="catalog-close">&times; Close</button>
     <h2>Territory</h2>
     <ul>
       <li><button type="button" data-doc="identity.md">identity.md</button></li>
@@ -548,14 +578,35 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     const id = btn.dataset.card;
     btn.addEventListener("pointerenter", ()=>show(id));
     btn.addEventListener("focus", ()=>show(id));
-    btn.addEventListener("click", ()=>show(id));
+    btn.addEventListener("click", ()=>{ show(id); closeCatalog(); });
   });
   catalog.querySelectorAll("button[data-doc]").forEach(btn=>{
     const path = btn.dataset.doc;
     btn.addEventListener("pointerenter", ()=>showDoc(path));
     btn.addEventListener("focus", ()=>showDoc(path));
-    btn.addEventListener("click", ()=>showDoc(path));
+    btn.addEventListener("click", ()=>{ showDoc(path); closeCatalog(); });
   });
+
+  // ---- mobile catalog drawer (hamburger) ----
+  const hamburger = document.getElementById("hamburger");
+  const backdrop = document.getElementById("backdrop");
+  const catalogCloseBtn = document.getElementById("catalog-close");
+  function openCatalog(){
+    catalog.classList.add("open");
+    backdrop.classList.add("open");
+    hamburger.setAttribute("aria-expanded","true");
+  }
+  function closeCatalog(){
+    catalog.classList.remove("open");
+    backdrop.classList.remove("open");
+    hamburger.setAttribute("aria-expanded","false");
+  }
+  hamburger.addEventListener("click", ()=>{
+    catalog.classList.contains("open") ? closeCatalog() : openCatalog();
+  });
+  backdrop.addEventListener("click", closeCatalog);
+  catalogCloseBtn.addEventListener("click", closeCatalog);
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeCatalog(); });
 });
 </script>
 </body>
