@@ -63,7 +63,7 @@
   .catalog .ghost-row button{color:var(--ghost)}
   .catalog .ghost-row button.on{color:var(--accent)}
   main{min-width:0}
-  .stage{width:100%; max-width:900px; margin:0 auto; display:block; touch-action:manipulation; aspect-ratio:1674/964; height:auto}
+  .stage{width:100%; max-width:900px; margin:0 auto; display:block; touch-action:manipulation; aspect-ratio:1730/964; height:auto}
   .hint{
     text-align:center; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
     color:var(--rule); padding:4px 0 18px;
@@ -167,7 +167,7 @@
   </aside>
 
   <main>
-    <svg class="stage" id="stage" viewBox="-580 -760 1674 964" role="img"
+    <svg class="stage" id="stage" viewBox="-580 -760 1730 964" role="img"
          aria-label="Interactive anatomical diagram of the lowercase letter a in Clarendon, sourced live from the objects/ markdown cards">
       <g id="scene"></g>
     </svg>
@@ -276,7 +276,9 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     const y = v => flipY ? -v : v;
     if(r.shape==="circle") return el("circle",{cx:r.cx, cy:y(r.cy), r:r.r});
     if(r.shape==="ellipse") return el("ellipse",{cx:r.x+r.w/2, cy:y(r.y+r.h/2), rx:r.w/2, ry:r.h/2});
-    return el("rect",{x:r.x, y: flipY ? -(r.y+r.h) : r.y, width:r.w, height:r.h});
+    // Slightly rounded corners: stem is the only rect left since bowl/finial/spur moved to
+    // ellipse, and a hard-cornered box now reads as the odd one out next to their curves.
+    return el("rect",{x:r.x, y: flipY ? -(r.y+r.h) : r.y, width:r.w, height:r.h, rx:18});
   }
 
   // ---- defs: hard clip paths for stroke highlights ----
