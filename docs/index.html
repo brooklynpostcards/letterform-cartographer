@@ -43,7 +43,7 @@
   .backdrop{display:none}
   .layout{
     max-width:1500px; margin:0 auto; padding:8px 16px 40px;
-    display:grid; grid-template-columns:190px minmax(380px,560px) minmax(320px,1fr);
+    display:grid; grid-template-columns:190px minmax(380px,720px) minmax(320px,1fr);
     gap:28px; align-items:start;
   }
   .layout .colophon{grid-column:2 / -1}
@@ -59,7 +59,7 @@
   .catalog ul{list-style:none; margin:0; padding:0}
   .catalog li{margin:0}
   .catalog button{
-    all:unset; display:block; width:100%; cursor:pointer; color:var(--ink);
+    all:unset; box-sizing:border-box; display:block; width:100%; cursor:pointer; color:var(--ink);
     padding:3px 0 3px 12px; border-left:2px solid transparent; text-transform:lowercase;
   }
   .catalog button:hover, .catalog button:focus-visible{color:var(--accent); border-color:var(--dim)}
@@ -639,7 +639,11 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     document.documentElement.style.setProperty("--header-h", headerEl.offsetHeight + "px");
   }
   syncHeaderHeight();
-  window.addEventListener("resize", syncHeaderHeight);
+  // ResizeObserver, not a window "resize" listener: the header's height can change for
+  // reasons that never fire a window resize event (a viewport override from a testing
+  // tool, a late-loading web font reflowing the title/subtitle) -- observing the header's
+  // own box is what actually stays correct regardless of why it changed.
+  new ResizeObserver(syncHeaderHeight).observe(headerEl);
 
   // identity.md first: who the cartographer is, before anything else -- the front
   // door, not the empty placeholder.
