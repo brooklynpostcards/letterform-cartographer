@@ -46,7 +46,6 @@
     display:grid; grid-template-columns:190px minmax(380px,720px) minmax(320px,1fr);
     gap:28px; align-items:start;
   }
-  .layout .colophon{grid-column:2 / -1}
   main{position:sticky; top:76px}
   .catalog{
     position:sticky; top:76px; font-size:12px; line-height:1.6;
@@ -131,12 +130,6 @@
     cursor:pointer; border-bottom:1px dotted var(--rule); padding-bottom:1px;
   }
   .doc-link:hover, .doc-link:focus-visible{color:var(--accent); border-color:var(--accent)}
-  .colophon{
-    max-width:600px; margin:34px auto 0; text-align:center;
-    font-size:11px; line-height:1.7; color:var(--rule);
-  }
-  .colophon a{color:inherit}
-  .colophon .sep{margin:0 6px}
 
   /* Mobile overrides live last on purpose: several rules above (e.g. .catalog button,
      .catalog-close, main) are declared unconditionally further up the sheet, and a
@@ -154,9 +147,8 @@
     header p{order:3; width:100%; text-align:center}
     .layout{
       grid-template-columns:1fr; gap:14px;
-      grid-template-areas:"stage" "readout" "colophon";
+      grid-template-areas:"stage" "readout";
     }
-    .layout .colophon{grid-column:1; grid-area:colophon}
     main{grid-area:stage; position:sticky; top:var(--header-h,120px); background:var(--bg); z-index:10; padding-top:4px}
     .readout{grid-area:readout}
     .catalog{
@@ -229,11 +221,6 @@
       <strong>does not hit</strong>, even though that is the word everyone reaches for.
       The faint marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>
   </div>
-
-  <p class="colophon">
-    Outline from Clarendon LT Std; labels set in Akzidenz-Grotesk Std and converted to outlines —
-    no font software redistributed. Card text fetched live from <code>objects/*.md</code>.
-  </p>
 </div>
 
 <script>
