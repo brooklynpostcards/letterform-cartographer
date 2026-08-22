@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anatomy of a — Clarendon</title>
+<style>
+  :root{
+    --bg:#f4f1ea; --ink:#14110d; --dim:#b9b2a4; --accent:#c0392b;
+    --rule:#8c8577; --panel:#e8e3d8; --ghost:#8c8577;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14110d; --ink:#f4f1ea; --dim:#4a453c; --accent:#e8674f;
+      --rule:#5c564a; --panel:#1e1a15; --ghost:#5c564a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14110d; --ink:#f4f1ea; --dim:#4a453c; --accent:#e8674f;
+    --rule:#5c564a; --panel:#1e1a15; --ghost:#5c564a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Akzidenz-Grotesk Std","Akzidenz-Grotesk BQ",Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    padding:28px 32px 0; max-width:1500px; margin:0 auto;
+    display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; justify-content:space-between;
+  }
+  h1{font-size:15px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; margin:0}
+  header p{margin:0; font-size:13px; color:var(--rule); letter-spacing:.04em}
+  main{max-width:1500px; margin:0 auto; padding:8px 16px 40px}
+  .stage{width:100%; max-width:900px; margin:0 auto; display:block; touch-action:manipulation; aspect-ratio:1820/1010; height:auto}
+  .hint{
+    text-align:center; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--rule); padding:4px 0 18px;
+  }
+  .glyph-base{fill:var(--dim); transition:fill .25s ease}
+  .glyph-hi{fill:var(--accent); opacity:0; transition:opacity .18s ease}
+  .glyph-hi.on{opacity:1}
+  .counter-hi{fill:var(--accent); opacity:0; transition:opacity .18s ease}
+  .counter-hi.on{opacity:.55}
+  .metric{stroke:var(--rule); stroke-width:1.5; stroke-dasharray:7 7; opacity:.5}
+  .leader{
+    stroke:var(--accent); stroke-width:3.5; fill:none; stroke-linecap:round;
+    stroke-dasharray:var(--len); stroke-dashoffset:var(--len);
+  }
+  .leader.on{animation:draw .42s cubic-bezier(.22,.8,.3,1) forwards}
+  .leader.ghost-leader{stroke:var(--ghost); stroke-dasharray:6 6 !important; animation:none !important; stroke-dashoffset:0 !important; opacity:.7}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .dot{fill:var(--accent); opacity:0; transform-box:fill-box; transform-origin:center}
+  .dot.on{animation:pop .42s cubic-bezier(.22,.8,.3,1) forwards}
+  @keyframes pop{0%{opacity:0;transform:scale(.2)}60%{opacity:1;transform:scale(1.25)}100%{opacity:1;transform:scale(1)}}
+  .label-art{fill:var(--ink); opacity:0; transition:opacity .15s ease}
+  .label-art.on{opacity:1}
+  .label-art.ghost-label.on{fill:var(--ghost); opacity:.85}
+  .hotspot{fill:transparent; cursor:pointer; outline:none}
+  .hotspot:focus-visible{stroke:var(--accent); stroke-width:3; stroke-dasharray:5 5}
+  .ghost-zone{fill:none; stroke:var(--ghost); stroke-width:2; stroke-dasharray:5 5; opacity:.55}
+  .readout{
+    max-width:760px; margin:0 auto; min-height:150px; padding:20px 24px;
+    background:var(--panel); border-left:3px solid var(--accent);
+  }
+  .readout.is-ghost{border-left-color:var(--ghost)}
+  .readout .src{
+    display:block; font-size:11px; letter-spacing:.04em; color:var(--rule);
+    margin-bottom:12px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  .readout .raw{
+    display:block; font-size:11px; line-height:1.6; color:var(--rule);
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    background:rgba(140,133,119,.1); border:1px solid var(--dim);
+    border-radius:3px; padding:8px 10px; margin-bottom:14px; white-space:pre-wrap;
+  }
+  .readout .raw b{color:var(--ink); font-weight:600}
+  .readout h2{margin:0 0 4px; font-size:19px; font-weight:500; letter-spacing:.02em}
+  .readout .kind{
+    font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent);
+    display:block; margin-bottom:10px;
+  }
+  .readout.is-ghost .kind{color:var(--ghost)}
+  .readout .body p{margin:0 0 10px; font-size:14px; line-height:1.6; color:var(--ink)}
+  .readout .body strong{font-weight:600}
+  .readout .body a{color:var(--accent); text-decoration:underline; cursor:pointer}
+  .empty{color:var(--rule); font-size:14px; line-height:1.55; margin:0}
+  footer{
+    max-width:760px; margin:26px auto 0; font-size:11.5px; line-height:1.7;
+    color:var(--rule); border-top:1px solid var(--dim); padding-top:14px;
+  }
+  footer a{color:inherit}
+  @media (max-width:700px){
+    header{padding:20px 18px 0}
+    .readout{margin:0 2px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Anatomy of a</h1>
+  <p>Clarendon LT Std Roman &middot; lowercase a &middot; cartographer catalog: 11 cards</p>
+</header>
+
+<main>
+  <svg class="stage" id="stage" viewBox="-620 -760 1820 1010" role="img"
+       aria-label="Interactive anatomical diagram of the lowercase letter a in Clarendon, sourced live from the objects/ markdown cards">
+    <g id="scene"></g>
+  </svg>
+  <p class="hint" id="hint">Hover a part of the letter — each card loads live from <code>objects/*.md</code></p>
+
+  <div class="readout" id="readout" aria-live="polite">
+    <p class="empty">Every card names what a change <strong>hits</strong> — and the neighbour it
+      <strong>does not hit</strong>, even though that is the word everyone reaches for.
+      The dashed marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>
+  </div>
+
+  <footer>
+    Glyph outline extracted from Clarendon LT Std Roman; on-diagram labels set in Akzidenz-Grotesk Std
+    Medium and converted to outlines — no font software is redistributed. Card text below the diagram is
+    fetched live from this repo's own <code>objects/*.md</code> files and rendered with a system font stack
+    (falls back gracefully; renders in real Akzidenz only on a machine that already has it installed).
+    Clarendon is a trademark of its respective owner; Akzidenz-Grotesk is a trademark of Berthold.
+    <br>Catalog: <a href="../examples.md">examples.md</a> &middot; Rules: <a href="../rules.md">rules.md</a>
+    &middot; Collisions: <a href="../reference/naming-collisions.md">reference/naming-collisions.md</a>
+  </footer>
+</main>
+
+<script>
+const CARD_FILES = ["stem","bowl","finial","ball-terminal","spur","counter",
+                     "aperture","x-height","baseline","overshoot","foot-serif"];
+const OBJ_DIR = "../objects/";
+
+// ---- tiny frontmatter + markdown parsers (closed, known input shape) ----
+function parseFrontmatter(raw){
+  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  if(!m) return {meta:{}, body:raw};
+  const meta = {};
+  m[1].split(/\r?\n/).forEach(line=>{
+    const mm = line.match(/^(\w[\w-]*):\s*(.*)$/);
+    if(!mm) return;
+    let [,k,v] = mm;
+    if(v==="null"){ meta[k]=null; return; }
+    if(v.startsWith("[") && v.endsWith("]")){
+      meta[k] = v.slice(1,-1).split(",").map(s=>parseFloat(s.trim())); return;
+    }
+    if(v.startsWith("{") && v.endsWith("}")){
+      const obj={};
+      v.slice(1,-1).split(",").forEach(pair=>{
+        const [pk,pv] = pair.split(":").map(s=>s.trim());
+        obj[pk] = isNaN(pv) ? pv : parseFloat(pv);
+      });
+      meta[k]=obj; return;
+    }
+    meta[k]=v;
+  });
+  return {meta, body:m[2].trim()};
+}
+function mdToHtml(body, onLink){
+  const esc = s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const lines = body.split(/\r?\n/)
+    .filter(l=>l.trim().length)
+    .filter(l=>!/^#+\s/.test(l.trim())); // headings folded into readout's own <h2>, drop from body
+  return lines.map(line=>{
+    let html = esc(line);
+    html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+    html = html.replace(/\[([^\]]+)\]\(([\w.-]+)\.md\)/g, (m0,text,slug)=>
+      `<a href="#" data-card="${slug}">${text}</a>`);
+    html = html.replace(/\[([^\]]+)\]\(\.\.\/reference\/([\w.-]+)\.md\)/g, (m0,text,slug)=>
+      `<a href="#" data-ref="${slug}">${text}</a>`);
+    return html.trim() ? `<p>${html}</p>` : "";
+  }).join("");
+}
+
+const cache = {};
+async function loadCard(id){
+  if(cache[id]) return cache[id];
+  const res = await fetch(OBJ_DIR + id + ".md");
+  const raw = await res.text();
+  const parsed = parseFrontmatter(raw);
+  parsed.path = "objects/" + id + ".md";
+  cache[id] = parsed;
+  return parsed;
+}
+
+const dataP = fetch("data.json").then(r=>r.json());
+const labelsP = fetch("labels.json").then(r=>r.json());
+
+Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data, L, cards])=>{
+  const g = data.glyph;
+  const XH = g.xHeight;
+  const S = document.getElementById("scene");
+  const readout = document.getElementById("readout");
+  const hint = document.getElementById("hint");
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (n,a={})=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+  const byId = {}; cards.forEach(c=>byId[c.meta.id]=c);
+
+  // ---- defs: clip paths for stroke highlights ----
+  const defs = el("defs");
+  cards.forEach(c=>{
+    const r = c.meta.region;
+    if(!r || (r.shape!=="rect" && r.shape!=="circle")) return;
+    const cp = el("clipPath",{id:"clip-"+c.meta.id, clipPathUnits:"userSpaceOnUse"});
+    if(r.shape==="circle") cp.appendChild(el("circle",{cx:r.cx, cy:-r.cy, r:r.r}));
+    else cp.appendChild(el("rect",{x:r.x, y:-(r.y+r.h), width:r.w, height:r.h}));
+    defs.appendChild(cp);
+  });
+  S.appendChild(defs);
+
+  // ---- metrics layer ----
+  const M = el("g");
+  const mline=(y,id)=>{M.appendChild(el("line",{x1:-380,y1:-y,x2:820,y2:-y,class:"metric","data-m":id}));};
+  mline(XH,"xh"); mline(0,"bl"); mline(483,"os"); mline(-15,"os2");
+  S.appendChild(M);
+
+  // ---- glyph ----
+  const gg = el("g");
+  gg.appendChild(el("path",{d:g.outer, class:"glyph-base", transform:"scale(1,-1)"}));
+  const cpath = el("path",{d:g.counter, transform:"scale(1,-1)"});
+  cpath.setAttribute("fill","var(--bg)");
+  gg.appendChild(cpath);
+  S.appendChild(gg);
+
+  // ---- highlight layer ----
+  cards.forEach(c=>{
+    const m = c.meta, r = m.region;
+    let node;
+    if(!r){ return; } // ghost: no geometry
+    if(r.shape==="counter"){
+      node = el("path",{d:g.counter, class:"counter-hi", id:"hi-"+m.id, transform:"scale(1,-1)"});
+    } else if(m.id==="aperture"){
+      node = el("circle",{cx:r.cx, cy:-r.cy, r:r.r, class:"counter-hi", id:"hi-"+m.id});
+    } else if(r.shape==="rect" || r.shape==="circle"){
+      node = el("path",{d:g.outer, class:"glyph-hi", id:"hi-"+m.id,
+                        "clip-path":"url(#clip-"+m.id+")", transform:"scale(1,-1)"});
+    } else { return; } // metric: no fill highlight, just the guide line
+    S.appendChild(node);
+  });
+
+  // ---- layout: anchor + label position per card (hand-placed, matches region) ----
+  const LAYOUT = {
+    "stem":          {label:[880,-330], side:"right"},
+    "bowl":          {label:[-560,-150], side:"left"},
+    "finial":        {label:[240,-690], side:"top"},
+    "ball-terminal": {label:[-560,-470], side:"left"},
+    "spur":          {label:[880,-90], side:"right"},
+    "counter":       {label:[880,-560], side:"right"},
+    "aperture":      {label:[-560,-40], side:"left"},
+    "x-height":      {label:[880,-720], side:"right"},
+    "baseline":      {label:[880,110], side:"right"},
+    "overshoot":     {label:[-560,-620], side:"left"},
+  };
+  const LSCALE = 0.052;
+
+  // ---- leaders + outlined labels (skip ghost: no anchor) ----
+  // Straight diagonal from the part to its label, trimmed short so it doesn't run under the text.
+  cards.forEach(c=>{
+    const m = c.meta;
+    if(!m.anchor || !LAYOUT[m.id]) return;
+    const [ax,ay] = m.anchor, [lx,ly] = LAYOUT[m.id].label, side = LAYOUT[m.id].side;
+    const sx = ax, sy = -ay;
+    const art = L[m.name];
+    const wpx = art ? art.w*LSCALE : 200;
+    // anchor point on the label's near edge, not its center
+    const labelAnchorX = side==="left" ? lx + wpx + 14 : side==="right" ? lx - 14 : lx + wpx/2;
+    const labelAnchorY = side==="top" ? ly + 20 : ly - 10;
+    const d = `M${sx} ${sy} L${labelAnchorX} ${labelAnchorY}`;
+    const path = el("path",{d, class:"leader", id:"ld-"+m.id});
+    S.appendChild(path);
+    path.style.setProperty("--len", path.getTotalLength());
+    S.appendChild(el("circle",{cx:sx, cy:sy, r:9, class:"dot", id:"dot-"+m.id}));
+    if(art){
+      const gl = el("g",{class:"label-art", id:"lb-"+m.id, transform:`translate(${lx} ${ly}) scale(${LSCALE} ${-LSCALE})`});
+      gl.appendChild(el("path",{d:art.d}));
+      S.appendChild(gl);
+    }
+  });
+
+  // ---- ghost marker: foot-serif, fixed position near stem base, always visible ----
+  // Placed in the gap between spur (-90) and baseline (110) in the right label column,
+  // with the same elbow-leader shape every other right-side card uses.
+  const ghostArt = L["Foot serif"];
+  const gx=520, gy=-24, gsx=gx, gsy=-gy;         // anchor: near stem base, where a foot serif would sit
+  const glx=880, gly=10;                          // label position, right column, between Spur and Baseline
+  S.appendChild(el("rect",{x:gx-14,y:gy-10,width:78,height:38,class:"ghost-zone",id:"ghost-zone"}));
+  const gPath = el("path",{d:`M${gsx} ${gsy} L${glx-14} ${gly-10}`, class:"leader ghost-leader", id:"ld-foot-serif"});
+  S.appendChild(gPath);
+  if(ghostArt){
+    const gl = el("g",{class:"label-art ghost-label", id:"lb-foot-serif", transform:`translate(${glx} ${gly}) scale(${LSCALE} ${-LSCALE})`});
+    gl.appendChild(el("path",{d:ghostArt.d}));
+    S.appendChild(gl);
+  }
+
+  // ---- hotspots (drawn last) ----
+  cards.forEach(c=>{
+    const m = c.meta, r = m.region;
+    let hs;
+    if(r && r.shape==="circle") hs = el("circle",{cx:r.cx, cy:-r.cy, r:r.r+6});
+    else if(r && r.shape==="rect") hs = el("rect",{x:r.x, y:-(r.y+r.h), width:r.w, height:r.h});
+    else if(r && r.shape==="counter") hs = el("path",{d:g.counter, transform:"scale(1,-1)"});
+    else if(r && r.shape==="metric"){
+      hs = el("rect",{x:576, y:-r.y-26, width:250, height:52});
+    } else if(m.id==="foot-serif"){
+      hs = el("rect",{x:gx-14,y:gy-10,width:78,height:38});
+    } else return;
+    hs.setAttribute("class","hotspot");
+    hs.setAttribute("tabindex","0");
+    hs.setAttribute("role","button");
+    hs.setAttribute("aria-label",m.name);
+    const on = ()=>show(m.id), off = ()=>clear();
+    hs.addEventListener("pointerenter",on);
+    hs.addEventListener("pointerleave",off);
+    hs.addEventListener("focus",on);
+    hs.addEventListener("blur",off);
+    hs.addEventListener("click",e=>{e.preventDefault();on();});
+    S.appendChild(hs);
+  });
+
+  function fmtRegion(r){
+    if(!r) return "null";
+    const parts = Object.keys(r).map(k=>`${k}: ${r[k]}`).join(", ");
+    return `{ ${parts} }`;
+  }
+  function rawFrontmatter(m){
+    return [
+      ["id", m.id], ["type", m.type], ["status", m.status],
+      ["anchor", m.anchor ? `[${m.anchor.join(", ")}]` : "null"],
+      ["region", fmtRegion(m.region)]
+    ].map(([k,v])=>`<b>${k}:</b> ${v}`).join("\n");
+  }
+
+  let current=null;
+  function clear(){
+    if(!current) return;
+    ["hi","ld","dot","lb"].forEach(pre=>{
+      const n=document.getElementById(pre+"-"+current); if(n) n.classList.remove("on");
+    });
+    document.querySelectorAll('.metric').forEach(mm=>mm.style.opacity="");
+    current=null;
+    readout.classList.remove("is-ghost");
+    readout.innerHTML = '<p class="empty">Every card names what a change <strong>hits</strong> — and the neighbour it <strong>does not hit</strong>, even though that is the word everyone reaches for. The dashed marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>';
+    hint.innerHTML = 'Hover a part of the letter — each card loads live from <code>objects/*.md</code>';
+  }
+  function render(id){
+    const card = byId[id]; if(!card) return;
+    const m = card.meta;
+    ["ld","lb"].forEach(pre=>{
+      const n=document.getElementById(pre+"-"+id);
+      if(n){ n.classList.remove("on"); void n.getBoundingClientRect(); n.classList.add("on"); }
+    });
+    if(id !== "foot-serif"){
+      ["hi","dot"].forEach(pre=>{const n=document.getElementById(pre+"-"+id); if(n) n.classList.add("on");});
+    }
+    if(m.region && m.region.shape==="metric"){
+      document.querySelectorAll('.metric').forEach(mm=>{
+        const t=mm.getAttribute("data-m");
+        const match = id==="overshoot" ? (t==="os"||t==="os2") : (id==="x-height"?t==="xh":t==="bl");
+        mm.style.opacity = match ? "1" : ".16";
+      });
+    }
+    hint.textContent = " ";
+    const isGhost = m.status === "ghost";
+    readout.classList.toggle("is-ghost", isGhost);
+    const bodyHtml = mdToHtml(card.body);
+    readout.innerHTML =
+      `<span class="src">${card.path}</span>
+       <span class="raw">${rawFrontmatter(m)}</span>
+       <span class="kind">${m.status}${isGhost?" — GHOST":""} · ${m.type}</span>
+       <h2>${m.name}</h2>
+       <div class="body">${bodyHtml}</div>`;
+    readout.querySelectorAll('[data-card]').forEach(a=>{
+      a.addEventListener("click",e=>{ e.preventDefault(); show(a.getAttribute("data-card")); });
+    });
+  }
+  function show(id){
+    if(current === id) return;
+    if(current) clear();
+    current = id;
+    render(id);
+  }
+});
+</script>
+</body>
+</html>
