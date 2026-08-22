@@ -86,8 +86,6 @@
   }
   .leader.on{opacity:1}
   .leader.ghost-leader{stroke:var(--ghost); stroke-dasharray:5 5}
-  .dot{fill:var(--accent); opacity:0; transition:opacity .16s ease}
-  .dot.on{opacity:1}
   .label-art{fill:var(--ink); opacity:0; transition:opacity .15s ease}
   .label-art.on{opacity:1}
   .label-art.ghost-label.on{fill:var(--ghost); opacity:.85}
@@ -416,7 +414,6 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     const d = `M${sx} ${sy} L${labelAnchorX} ${labelAnchorY}`;
     const path = el("path",{d, class:"leader", id:"ld-"+m.id});
     S.appendChild(path);
-    S.appendChild(el("circle",{cx:sx, cy:sy, r:9, class:"dot", id:"dot-"+m.id}));
     if(art){
       const gl = el("g",{class:"label-art", id:"lb-"+m.id, transform:`translate(${lx} ${ly}) scale(${LSCALE} ${-LSCALE})`});
       gl.appendChild(el("path",{d:art.d}));
@@ -487,7 +484,7 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   let current=null;
   function clear(){
     if(!current) return;
-    ["hi","ld","dot","lb"].forEach(pre=>{
+    ["hi","ld","lb"].forEach(pre=>{
       const n=document.getElementById(pre+"-"+current); if(n) n.classList.remove("on");
     });
     document.querySelectorAll('.metric.on').forEach(mm=>mm.classList.remove("on"));
@@ -502,7 +499,7 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     const m = card.meta;
     ["ld","lb"].forEach(pre=>{const n=document.getElementById(pre+"-"+id); if(n) n.classList.add("on");});
     if(id !== "foot-serif"){
-      ["hi","dot"].forEach(pre=>{const n=document.getElementById(pre+"-"+id); if(n) n.classList.add("on");});
+      const n=document.getElementById("hi-"+id); if(n) n.classList.add("on");
     }
     (METRIC_IDS[id]||[]).forEach(t=>{
       const n=document.getElementById("metric-"+t); if(n) n.classList.add("on");
