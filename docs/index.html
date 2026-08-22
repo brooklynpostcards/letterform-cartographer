@@ -62,7 +62,7 @@
   .catalog .ghost-row button{color:var(--ghost)}
   .catalog .ghost-row button.on{color:var(--accent)}
   main{min-width:0}
-  .stage{width:100%; max-width:900px; margin:0 auto; display:block; touch-action:manipulation; aspect-ratio:1820/1010; height:auto}
+  .stage{width:100%; max-width:900px; margin:0 auto; display:block; touch-action:manipulation; aspect-ratio:1674/929; height:auto}
   .hint{
     text-align:center; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
     color:var(--rule); padding:4px 0 18px;
@@ -72,8 +72,8 @@
   .glyph-hi.on{opacity:1}
   .counter-hi{fill:var(--accent); opacity:0; transition:opacity .18s ease}
   .counter-hi.on{opacity:.55}
-  .metric{stroke:var(--rule); stroke-width:1.5; stroke-dasharray:6 6; opacity:0; transition:opacity .2s ease}
-  .metric.on{opacity:.55}
+  .metric{stroke:var(--rule); stroke-width:1.5; stroke-dasharray:6 6; opacity:.32; transition:opacity .2s ease}
+  .metric.on{opacity:.75; stroke:var(--accent)}
   .leader{
     /* Straight, solid — only the reference marks (metrics, ghost) get to be dashed. */
     stroke:var(--accent); stroke-width:2.5; fill:none; stroke-linecap:round;
@@ -166,7 +166,7 @@
   </aside>
 
   <main>
-    <svg class="stage" id="stage" viewBox="-620 -760 1820 1010" role="img"
+    <svg class="stage" id="stage" viewBox="-580 -725 1674 929" role="img"
          aria-label="Interactive anatomical diagram of the lowercase letter a in Clarendon, sourced live from the objects/ markdown cards">
       <g id="scene"></g>
     </svg>
@@ -263,19 +263,30 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
 
   const byId = {}; cards.forEach(c=>byId[c.meta.id]=c);
 
-  // ---- defs: clip paths for stroke highlights ----
-  // The clipped path (g.outer) carries transform="scale(1,-1)" and its `d` is in raw,
-  // un-flipped font units (y-up). With clipPathUnits="userSpaceOnUse", the clip geometry
-  // is evaluated in that SAME local coordinate system as the element's own d/transform —
-  // not the parent's flipped screen space — so it must use raw font-space y, not -y.
+  // ---- defs: soft-edged masks for stroke highlights ----
+  // A hard clip-path rect cutting across a curved stroke reads as an obvious artificial
+  // box, not the stroke itself. Using a MASK with a blurred rect/circle instead keeps the
+  // highlight's true edges crisp wherever it follows the glyph's own ink, and only feathers
+  // the artificial straight cut where a region boundary has no real anatomical edge to
+  // follow (e.g. the stem/spur split, which sits mid-curve with no natural joint there).
+  // Mask geometry is in the same raw, un-flipped font-unit space as the clipped path's own
+  // d/transform (see the coordinate-space note in reference/decisions.md).
   const defs = el("defs");
+  const blur = el("filter",{id:"soft-edge", x:"-50%", y:"-50%", width:"200%", height:"200%"});
+  blur.appendChild(el("feGaussianBlur",{stdDeviation:"16"}));
+  defs.appendChild(blur);
   cards.forEach(c=>{
     const r = c.meta.region;
     if(!r || (r.shape!=="rect" && r.shape!=="circle")) return;
-    const cp = el("clipPath",{id:"clip-"+c.meta.id, clipPathUnits:"userSpaceOnUse"});
-    if(r.shape==="circle") cp.appendChild(el("circle",{cx:r.cx, cy:r.cy, r:r.r}));
-    else cp.appendChild(el("rect",{x:r.x, y:r.y, width:r.w, height:r.h}));
-    defs.appendChild(cp);
+    const mask = el("mask",{id:"mask-"+c.meta.id, maskUnits:"userSpaceOnUse",
+                             x:-2000, y:-2000, width:4000, height:4000});
+    const shape = r.shape==="circle"
+      ? el("circle",{cx:r.cx, cy:r.cy, r:r.r})
+      : el("rect",{x:r.x, y:r.y, width:r.w, height:r.h});
+    shape.setAttribute("fill","white");
+    shape.setAttribute("filter","url(#soft-edge)");
+    mask.appendChild(shape);
+    defs.appendChild(mask);
   });
   S.appendChild(defs);
 
@@ -307,9 +318,9 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
       // same way, so a stroke's highlight never paints solid over the counter's hole —
       // bowl and counter are different objects even where their regions overlap.
       node = el("g",{class:"glyph-hi", id:"hi-"+m.id});
-      const fillPath = el("path",{d:g.outer, "clip-path":"url(#clip-"+m.id+")", transform:"scale(1,-1)"});
+      const fillPath = el("path",{d:g.outer, mask:"url(#mask-"+m.id+")", transform:"scale(1,-1)"});
       fillPath.setAttribute("fill","var(--accent)");
-      const punch = el("path",{d:g.counter, "clip-path":"url(#clip-"+m.id+")", transform:"scale(1,-1)"});
+      const punch = el("path",{d:g.counter, mask:"url(#mask-"+m.id+")", transform:"scale(1,-1)"});
       punch.setAttribute("fill","var(--bg)");
       node.appendChild(fillPath);
       node.appendChild(punch);

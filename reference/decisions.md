@@ -49,3 +49,15 @@ Logged per `icm-md-writer`'s Decision Record shape — so a later session doesn'
 **Rationale:** The segment scan (`reference/decisions.md`'s earlier entry) shows the spur's ink exists as an isolated island separate from the stem only below y≈165; above that, only the stem's own segment continues. Splitting the two regions at y=165 removes the overlap entirely rather than papering over it with z-order.
 
 **Consequences:** `objects/stem.md` region height shrank to 185 (y:165–350); `objects/spur.md` region height shrank to 187 (y:−22–165). Both anchors re-verified on-ink after the change.
+
+---
+
+**Decision:** Highlight rendering switched from a hard `clip-path` to a blurred `mask` (feGaussianBlur, stdDeviation 16) for every rect/circle region.
+
+**Context:** Once the highlights were actually visible (previous entry), the boundary itself was still wrong in a different way: a region's straight edge frequently has no anatomical meaning — it exists only to stop the highlight from bleeding into a neighbouring part (e.g. the stem/spur split at y=165, which sits mid-curve on a single unbroken vertical stroke with no real joint there). A hard clip made that arbitrary cut look like a rectangle had been pasted over the letter, most visibly on `spur`, whose highlight had a flat horizontal top slicing straight across the curl.
+
+**Options considered:** (1) hand-trace true sub-paths from the font's actual bezier commands so every boundary follows real ink — investigated directly against the raw path data; rejected for now because several parts (the ball-terminal spiral in particular) double back on themselves in a way that doesn't reduce to clean point-index cuts without real risk of introducing gaps or self-intersections that are hard to verify visually. (2) Ellipses instead of rects — better than rects on curved parts, still an arbitrary hard edge. (3) Soft mask instead of hard clip.
+
+**Rationale:** A mask with a blurred rect/circle keeps every *true* ink edge exactly as sharp as before — the mask is at full opacity well before it reaches the real silhouette — and only feathers opacity near the artificial boundary itself, where no real edge exists to preserve. This reads as "the general area of this stroke" rather than "this exact rectangle," which is the honest thing to claim given the boundary really is a judgment call, not a measured fact. The counter-punch technique from the previous entry is unaffected: both the accent fill and the bg-colored punch share the same mask, so the counter's own true edge stays crisp throughout — confirmed by direct visual zoom, not just DOM inspection.
+
+**Consequences:** `defs` now emits one shared `<filter id="soft-edge">` plus one `<mask>` per stroke card (replacing the old `<clipPath>` per card); `fillPath`/`punch` use `mask="url(#mask-ID)"` instead of `clip-path`. No card content changed — this is purely a rendering technique, not a re-scoping of any region.
