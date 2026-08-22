@@ -33,7 +33,7 @@ Clarendon is a slab serif — that's the first and often only thing anyone knows
 | `objects/` | The eleven cards themselves — the actual shelves |
 | `reference/card-types.md` | The three card shapes this territory uses |
 | `reference/naming-collisions.md` | Four real vocabulary traps, written down once |
-| `reference/decisions.md` | Two logged decisions (font choice; two terminology corrections) with rationale |
+| `reference/decisions.md` | Logged decisions (font choice; terminology corrections; rendering technique) with rationale |
 | `docs/index.html` | The live diagram — a viewer over `objects/`, not a copy of it |
 
 ## What this is not
@@ -44,6 +44,6 @@ Not a font-design tutorial, not an audit of Clarendon, not a copy of the glyph's
 
 - Font: Clarendon LT Std Roman (`ClarendonLTStd.otf`, Adobe), verified against a second independent Clarendon before use — see `reference/decisions.md`.
 - Terminology: `typography-fundamentals` skill (glossary, counterform notes, classification reference). Two terms drafted from memory before that audit ("arch," "tail") were wrong and were replaced with the skill's actual terms ("finial," "spur").
-- The diagram outlines the glyph and eleven label words as vector paths rather than embedding either Clarendon or Akzidenz-Grotesk as web fonts — both are commercial font software; only the specific letterforms used as diagram artwork are shipped, not the fonts themselves. Card body text (which is unbounded prose, not a fixed word list) uses a CSS font stack that tries Akzidenz-Grotesk Std first and falls back to a system sans — it renders in real Akzidenz only on a machine that already has it installed, and ships no font file either way.
+- The diagram outlines the glyph and eleven label words as vector paths rather than embedding either Clarendon or Akzidenz-Grotesk as web fonts — both are commercial font software; only the specific letterforms used as diagram artwork are shipped, not the fonts themselves. Card body text (which is unbounded prose, not a fixed word list) uses a system CSS font stack — Helvetica Neue, falling back to Helvetica, Arial, and sans-serif — so it ships no font file either way.
 
 Built following the sixth form described in Weekly Comp #11: The Cartographer — a system map of a real, in-force body of work, using the ICM Architect skill's invariants (github.com/RinDig/icm-architect) as scaffolding.
