@@ -416,7 +416,12 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     const d = `M${sx} ${sy} L${labelAnchorX} ${labelAnchorY}`;
     const path = el("path",{d, class:"leader", id:"ld-"+m.id});
     S.appendChild(path);
-    S.appendChild(el("circle",{cx:sx, cy:sy, r:9, class:"dot", id:"dot-"+m.id}));
+    // The dot marks the anchor, but spur's anchor sits right at the top edge of that
+    // stroke's ink (verified via isPointInFill probing) -- an r=9 circle centered there
+    // pokes half its circumference out into open space. Nudge just the dot, not the
+    // anchor/leader line itself, down into the stroke's body where the full circle fits.
+    const dotY = m.id==="spur" ? sy+10 : sy;
+    S.appendChild(el("circle",{cx:sx, cy:dotY, r:9, class:"dot", id:"dot-"+m.id}));
     if(art){
       const gl = el("g",{class:"label-art", id:"lb-"+m.id, transform:`translate(${lx} ${ly}) scale(${LSCALE} ${-LSCALE})`});
       gl.appendChild(el("path",{d:art.d}));
