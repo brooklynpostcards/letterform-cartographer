@@ -4,7 +4,7 @@ name: Bowl
 type: stroke
 status: live
 anchor: [95, 150]
-region: {shape: rect, x: 8, y: -22, w: 338, h: 296}
+region: {shape: ellipse, x: 8, y: -22, w: 338, h: 296}
 ---
 
 # Bowl

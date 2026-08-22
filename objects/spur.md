@@ -4,7 +4,7 @@ name: Spur
 type: stroke-ending
 status: live
 anchor: [470, 60]
-region: {shape: rect, x: 332, y: -22, w: 244, h: 187}
+region: {shape: ellipse, x: 332, y: -22, w: 244, h: 187}
 ---
 
 # Spur

@@ -4,7 +4,7 @@ name: Finial
 type: stroke
 status: live
 anchor: [280, 465]
-region: {shape: rect, x: 150, y: 352, w: 280, h: 135}
+region: {shape: ellipse, x: 150, y: 352, w: 280, h: 135}
 ---
 
 # Finial

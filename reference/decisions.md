@@ -61,3 +61,15 @@ Logged per `icm-md-writer`'s Decision Record shape — so a later session doesn'
 **Rationale:** A mask with a blurred rect/circle keeps every *true* ink edge exactly as sharp as before — the mask is at full opacity well before it reaches the real silhouette — and only feathers opacity near the artificial boundary itself, where no real edge exists to preserve. This reads as "the general area of this stroke" rather than "this exact rectangle," which is the honest thing to claim given the boundary really is a judgment call, not a measured fact. The counter-punch technique from the previous entry is unaffected: both the accent fill and the bg-colored punch share the same mask, so the counter's own true edge stays crisp throughout — confirmed by direct visual zoom, not just DOM inspection.
 
 **Consequences:** `defs` now emits one shared `<filter id="soft-edge">` plus one `<mask>` per stroke card (replacing the old `<clipPath>` per card); `fillPath`/`punch` use `mask="url(#mask-ID)"` instead of `clip-path`. No card content changed — this is purely a rendering technique, not a re-scoping of any region.
+
+---
+
+**Decision:** Replace the blurred mask (previous entry) with a hard-edged `ellipse` clip for `bowl`, `finial`, and `spur`; `stem` stays a literal `rect`.
+
+**Context:** The blur fixed the "obvious rectangle" problem but introduced a new one — a soft, hazy glow reads as imprecise, and clashes with the rest of the diagram's crisp, flat-color language (solid Clarendon fill, solid Akzidenz labels, hard-edged counter cutout). Fixing "not accurate" by making the tool *less* precise was the wrong trade.
+
+**Options considered:** Smaller blur radius (still soft, just less of it); hand-traced true sub-paths from the font's real bezier commands (investigated and rejected in the entry above — the ball-terminal spiral doesn't reduce to clean cuts); a hard-edged shape better suited to a curved stroke than an axis-aligned rectangle.
+
+**Rationale:** A rectangle has flat sides, so any edge that crosses a stroke does so as a dead-straight cut — the artifact that made `spur` look like a box. An ellipse has no flat sides: wherever its boundary crosses the stroke, it does so at an angle, which reads as a rounded, deliberate highlight rather than a pasted-on shape, while staying exactly as hard-edged and "measured" as the rest of the diagram. `stem` is excluded because it's genuinely a straight vertical stroke — a rect is the anatomically correct shape there, not a compromise.
+
+**Consequences:** `objects/bowl.md`, `objects/finial.md`, `objects/spur.md` frontmatter changed `region.shape` from `rect` to `ellipse` (same `x`/`y`/`w`/`h` — now read as an ellipse's bounding box, `cx`/`cy` at its center, `rx`/`ry` at half its width/height). `docs/index.html` gained a shared `regionShapeEl(r)` helper so the clip-path defs, the highlight fill/punch, and the hotspot all build the identical rect/circle/ellipse from one place instead of three separately-maintained branches — the kind of duplication that let the coordinate-space bug (two entries up) go unnoticed as long as it did. The blur filter and per-card masks were removed entirely.
