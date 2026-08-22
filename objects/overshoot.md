@@ -15,4 +15,4 @@ region: {shape: metric, y: 483}
 
 **Hits** — How big the letter looks. Round and pointed shapes read small when they stop exactly on a flat line, so the punchcutter pushed them past it. Remove the overshoot and the a shrinks optically next to n and x.
 
-**Does not hit** — The metrics themselves. Nothing here is misaligned. This is the card most likely to be "fixed" by a cold reader who sees 483 ≠ 468 and assumes a rounding error. It is a correction, not a defect.
+**Does not hit** — The metrics themselves. Nothing here is misaligned. This is the card most likely to be “fixed” by a cold reader who sees 483 ≠ 468 and assumes a rounding error. It is a correction, not a defect.

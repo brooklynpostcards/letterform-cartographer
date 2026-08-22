@@ -32,4 +32,4 @@ Every card ends with exactly two lines. **Hits** names the real structural neigh
 
 ## How a card gets built
 
-Before writing any card: extract the real outline (`fontTools`, not a rendered image, not a memory of what Clarendon "should" look like), identify which point range the part occupies, and check it against a second independent source of the same typeface before trusting anything that looks surprising. This territory's ghost card exists because that check was necessary — the first look at the outline seemed wrong precisely where it was actually right.
+Before writing any card: extract the real outline (`fontTools`, not a rendered image, not a memory of what Clarendon “should” look like), identify which point range the part occupies, and check it against a second independent source of the same typeface before trusting anything that looks surprising. This territory's ghost card exists because that check was necessary — the first look at the outline seemed wrong precisely where it was actually right.

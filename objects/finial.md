@@ -9,7 +9,7 @@ region: {shape: ellipse, x: 150, y: 352, w: 280, h: 135}
 
 # Finial
 
-**What it is** — The ornamental terminal stroke that leaves the top of the stem, crests above the x-height, and runs back down the left side to end in the [ball terminal](ball-terminal.md). The typography-fundamentals skill's glossary names this term specifically for *a* and *f* — the generic "arch" (used for *n*, *m*, *h*) is a different part on a different letter shape; see [naming-collisions](../reference/naming-collisions.md).
+**What it is** — The ornamental terminal stroke that leaves the top of the stem, crests above the x-height, and runs back down the left side to end in the [ball terminal](ball-terminal.md). The typography-fundamentals skill's glossary names this term specifically for *a* and *f* — the generic “arch” (used for *n*, *m*, *h*) is a different part on a different letter shape; see [naming-collisions](../reference/naming-collisions.md).
 
 **Status** — Live. Cited: outer contour walk, points 125–250, running (441,350) to (292,481) to (49,343).
 

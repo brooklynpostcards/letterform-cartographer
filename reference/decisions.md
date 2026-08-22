@@ -6,25 +6,25 @@ Logged per `icm-md-writer`'s Decision Record shape — so a later session doesn'
 
 **Decision:** Map Clarendon LT Std (`ClarendonLTStd.otf`, Adobe), not Ringold (`Ringold-Clarendon`, Bijou Type).
 
-**Context:** Adobe Fonts returned two "Clarendon" matches. Ringold is a 2020s Bijou Type design by Dan Rhatigan with a style cut named "Clarendon"; Clarendon URW / Clarendon LT Std are digitizations of the original 1845 Fann Street Foundry design.
+**Context:** Adobe Fonts returned two “Clarendon” matches. Ringold is a 2020s Bijou Type design by Dan Rhatigan with a style cut named “Clarendon”; Clarendon URW / Clarendon LT Std are digitizations of the original 1845 Fann Street Foundry design.
 
 **Options considered:** Ringold (available, contemporary reinterpretation), Clarendon URW (Adobe Fonts, faithful digitization), Clarendon LT Std (found locally, same lineage as URW's source).
 
-**Rationale:** The brief was "the classic slab serif" — the historical original, not a contemporary typeface that borrowed its name for one cut. Clarendon LT Std was confirmed on the user's own machine and verified against a second independent source (SuperClarendon) before use.
+**Rationale:** The brief was “the classic slab serif” — the historical original, not a contemporary typeface that borrowed its name for one cut. Clarendon LT Std was confirmed on the user's own machine and verified against a second independent source (SuperClarendon) before use.
 
 **Consequences:** Every card in `objects/` cites `ClarendonLTStd.otf` specifically. A card built from Ringold's outline would not match — the shapes differ (this was tested: Ringold's lowercase a follows the general double-storey pattern but its terminal geometry is not identical).
 
 ---
 
-**Decision:** Rename "Arch" → **Finial**, "Tail" → **Spur**.
+**Decision:** Rename “Arch” → **Finial**, “Tail” → **Spur**.
 
 **Context:** Both cards were drafted first from general typographic knowledge, then audited against the loaded `typography-fundamentals` skill's `glossary.md` — the source this whole map is supposed to be grounded in.
 
-**Options considered:** Keep "Arch" and "Tail" (common terms, arguably clearer to a lay reader) vs. switch to the skill's own defined terms.
+**Options considered:** Keep “Arch” and “Tail” (common terms, arguably clearer to a lay reader) vs. switch to the skill's own defined terms.
 
-**Rationale:** `glossary.md` does not define "Arch" at all. It defines **Finial** — "an ornamental terminal stroke at the top of characters such as *a* and *f*" — explicitly for this letter. It defines **Tail** only for Q, K, R, and g's loop, not for *a*; it defines **Spur** as "the terminal to the stem of a rounded letter," which is the correct fit. `rules.md` for this territory says a card must cite grounded terminology, not memory — using "Arch" and "Tail" would have violated this map's own rule.
+**Rationale:** `glossary.md` does not define “Arch” at all. It defines **Finial** — “an ornamental terminal stroke at the top of characters such as *a* and *f*” — explicitly for this letter. It defines **Tail** only for Q, K, R, and g's loop, not for *a*; it defines **Spur** as “the terminal to the stem of a rounded letter,” which is the correct fit. `rules.md` for this territory says a card must cite grounded terminology, not memory — using “Arch” and “Tail” would have violated this map's own rule.
 
-**Consequences:** `reference/naming-collisions.md` documents both swaps as the collision a reader is likely to hit first, since "arch" and "tail" are the words most people reach for by analogy to *n*/*m*/*h* and *g*/*Q* respectively.
+**Consequences:** `reference/naming-collisions.md` documents both swaps as the collision a reader is likely to hit first, since “arch” and “tail” are the words most people reach for by analogy to *n*/*m*/*h* and *g*/*Q* respectively.
 
 ---
 
@@ -58,7 +58,7 @@ Logged per `icm-md-writer`'s Decision Record shape — so a later session doesn'
 
 **Options considered:** (1) hand-trace true sub-paths from the font's actual bezier commands so every boundary follows real ink — investigated directly against the raw path data; rejected for now because several parts (the ball-terminal spiral in particular) double back on themselves in a way that doesn't reduce to clean point-index cuts without real risk of introducing gaps or self-intersections that are hard to verify visually. (2) Ellipses instead of rects — better than rects on curved parts, still an arbitrary hard edge. (3) Soft mask instead of hard clip.
 
-**Rationale:** A mask with a blurred rect/circle keeps every *true* ink edge exactly as sharp as before — the mask is at full opacity well before it reaches the real silhouette — and only feathers opacity near the artificial boundary itself, where no real edge exists to preserve. This reads as "the general area of this stroke" rather than "this exact rectangle," which is the honest thing to claim given the boundary really is a judgment call, not a measured fact. The counter-punch technique from the previous entry is unaffected: both the accent fill and the bg-colored punch share the same mask, so the counter's own true edge stays crisp throughout — confirmed by direct visual zoom, not just DOM inspection.
+**Rationale:** A mask with a blurred rect/circle keeps every *true* ink edge exactly as sharp as before — the mask is at full opacity well before it reaches the real silhouette — and only feathers opacity near the artificial boundary itself, where no real edge exists to preserve. This reads as “the general area of this stroke” rather than “this exact rectangle,” which is the honest thing to claim given the boundary really is a judgment call, not a measured fact. The counter-punch technique from the previous entry is unaffected: both the accent fill and the bg-colored punch share the same mask, so the counter's own true edge stays crisp throughout — confirmed by direct visual zoom, not just DOM inspection.
 
 **Consequences:** `defs` now emits one shared `<filter id="soft-edge">` plus one `<mask>` per stroke card (replacing the old `<clipPath>` per card); `fillPath`/`punch` use `mask="url(#mask-ID)"` instead of `clip-path`. No card content changed — this is purely a rendering technique, not a re-scoping of any region.
 
@@ -66,11 +66,11 @@ Logged per `icm-md-writer`'s Decision Record shape — so a later session doesn'
 
 **Decision:** Replace the blurred mask (previous entry) with a hard-edged `ellipse` clip for `bowl`, `finial`, and `spur`; `stem` stays a literal `rect`.
 
-**Context:** The blur fixed the "obvious rectangle" problem but introduced a new one — a soft, hazy glow reads as imprecise, and clashes with the rest of the diagram's crisp, flat-color language (solid Clarendon fill, solid Akzidenz labels, hard-edged counter cutout). Fixing "not accurate" by making the tool *less* precise was the wrong trade.
+**Context:** The blur fixed the “obvious rectangle” problem but introduced a new one — a soft, hazy glow reads as imprecise, and clashes with the rest of the diagram's crisp, flat-color language (solid Clarendon fill, solid Akzidenz labels, hard-edged counter cutout). Fixing “not accurate” by making the tool *less* precise was the wrong trade.
 
 **Options considered:** Smaller blur radius (still soft, just less of it); hand-traced true sub-paths from the font's real bezier commands (investigated and rejected in the entry above — the ball-terminal spiral doesn't reduce to clean cuts); a hard-edged shape better suited to a curved stroke than an axis-aligned rectangle.
 
-**Rationale:** A rectangle has flat sides, so any edge that crosses a stroke does so as a dead-straight cut — the artifact that made `spur` look like a box. An ellipse has no flat sides: wherever its boundary crosses the stroke, it does so at an angle, which reads as a rounded, deliberate highlight rather than a pasted-on shape, while staying exactly as hard-edged and "measured" as the rest of the diagram. `stem` is excluded because it's genuinely a straight vertical stroke — a rect is the anatomically correct shape there, not a compromise.
+**Rationale:** A rectangle has flat sides, so any edge that crosses a stroke does so as a dead-straight cut — the artifact that made `spur` look like a box. An ellipse has no flat sides: wherever its boundary crosses the stroke, it does so at an angle, which reads as a rounded, deliberate highlight rather than a pasted-on shape, while staying exactly as hard-edged and “measured” as the rest of the diagram. `stem` is excluded because it's genuinely a straight vertical stroke — a rect is the anatomically correct shape there, not a compromise.
 
 **Consequences:** `objects/bowl.md`, `objects/finial.md`, `objects/spur.md` frontmatter changed `region.shape` from `rect` to `ellipse` (same `x`/`y`/`w`/`h` — now read as an ellipse's bounding box, `cx`/`cy` at its center, `rx`/`ry` at half its width/height). `docs/index.html` gained a shared `regionShapeEl(r)` helper so the clip-path defs, the highlight fill/punch, and the hotspot all build the identical rect/circle/ellipse from one place instead of three separately-maintained branches — the kind of duplication that let the coordinate-space bug (two entries up) go unnoticed as long as it did. The blur filter and per-card masks were removed entirely.
 
@@ -80,6 +80,6 @@ Logged per `icm-md-writer`'s Decision Record shape — so a later session doesn'
 
 **Context:** `stem`'s region and `counter`'s bounds (x=157–323) overlapped by 3 units (320–323). The counter-punch (two entries up) already prevents solid fill from painting over the counter's true hole even there, so this was never a color-accuracy bug — but a 3-unit sliver where a rounded-rect corner nearly grazes a curved hole is exactly the kind of imprecision that reads as visually unsettled up close, and it was flagged as such.
 
-**Rationale:** `stem` and `counter` genuinely share a border in the anatomy — `objects/stem.md`'s own Hits line says so ("the stem's left edge is also the counter's right wall"). The fix isn't to deny that adjacency, only to stop rendering it as a near-miss. Re-running the ink-ratio check at the pulled-in bounds (x=328, w=112) found 100% ink coverage, tighter than the original 120-wide region's 92% — the 3 units being trimmed were never solid stem ink at this height anyway.
+**Rationale:** `stem` and `counter` genuinely share a border in the anatomy — `objects/stem.md`'s own Hits line says so (“the stem's left edge is also the counter's right wall”). The fix isn't to deny that adjacency, only to stop rendering it as a near-miss. Re-running the ink-ratio check at the pulled-in bounds (x=328, w=112) found 100% ink coverage, tighter than the original 120-wide region's 92% — the 3 units being trimmed were never solid stem ink at this height anyway.
 
 **Consequences:** `objects/stem.md` region width changed 120→112, x 320→328. Anchor (380,210) re-confirmed on-ink. No prose changes needed — the card's cited ink range (x=324–440 at y=210) was already accurate; only the rendering region, a deliberately conservative subset of it, moved.

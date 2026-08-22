@@ -19,4 +19,4 @@ This was verified the hard way while building this map. The extracted outline wa
 
 **Hits** — Nothing. There is nothing here to change.
 
-**Does not hit** — Everything. Any instruction that says "adjust the foot serif on the a" is describing a different typeface, or a different letter in this one.
+**Does not hit** — Everything. Any instruction that says “adjust the foot serif on the a” is describing a different typeface, or a different letter in this one.

@@ -8,7 +8,7 @@ A system map of one glyph: the lowercase **a** in Clarendon LT Std Roman. Eleven
 
 ## Why this exists
 
-A glyph outline is just point coordinates. "Bowl," "counter," "spur" are names a human draws around ranges of that data — nothing in a font file labels itself. This repo is that labeling, done once, cited against both the real extracted outline (`fontTools`) and a loaded typography reference skill, so nobody has to re-derive it by eye.
+A glyph outline is just point coordinates. “Bowl,” “counter,” “spur” are names a human draws around ranges of that data — nothing in a font file labels itself. This repo is that labeling, done once, cited against both the real extracted outline (`fontTools`) and a loaded typography reference skill, so nobody has to re-derive it by eye.
 
 ## The one ghost, explained up front
 
@@ -19,7 +19,7 @@ Clarendon is a slab serif — that's the first and often only thing anyone knows
 1. Read `identity.md` and `rules.md` once. They're short.
 2. Open `examples.md`. It's a catalog table of all eleven parts plus three short worked walks.
 3. Need one part? Open exactly its card in `objects/`. Stop there.
-4. Hit a name that isn't in the catalog ("arch," "tail")? Check `reference/naming-collisions.md` first — it's very likely already answered.
+4. Hit a name that isn't in the catalog (“arch,” “tail”)? Check `reference/naming-collisions.md` first — it's very likely already answered.
 
 **The one rule: load the catalog, then one card. Never all eleven at once.**
 
@@ -43,7 +43,7 @@ Not a font-design tutorial, not an audit of Clarendon, not a copy of the glyph's
 ## Territory and sourcing
 
 - Font: Clarendon LT Std Roman (`ClarendonLTStd.otf`, Adobe), verified against a second independent Clarendon before use — see `reference/decisions.md`.
-- Terminology: `typography-fundamentals` skill (glossary, counterform notes, classification reference). Two terms drafted from memory before that audit ("arch," "tail") were wrong and were replaced with the skill's actual terms ("finial," "spur").
+- Terminology: `typography-fundamentals` skill (glossary, counterform notes, classification reference). Two terms drafted from memory before that audit (“arch,” “tail”) were wrong and were replaced with the skill's actual terms (“finial,” “spur”).
 - The diagram outlines the glyph and eleven label words as vector paths rather than embedding either Clarendon or Akzidenz-Grotesk as web fonts — both are commercial font software; only the specific letterforms used as diagram artwork are shipped, not the fonts themselves. Card body text (which is unbounded prose, not a fixed word list) uses a system CSS font stack — Helvetica Neue, falling back to Helvetica, Arial, and sans-serif — so it ships no font file either way.
 
 Built following the sixth form described in Weekly Comp #11: The Cartographer — a system map of a real, in-force body of work, using the ICM Architect skill's invariants (github.com/RinDig/icm-architect) as scaffolding.
