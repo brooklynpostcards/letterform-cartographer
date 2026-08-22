@@ -52,7 +52,7 @@
     position:sticky; top:76px; font-size:12px; line-height:1.6;
   }
   .catalog h2{
-    font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--rule);
+    font-size:10px; letter-spacing:.14em; text-transform:lowercase; color:var(--rule);
     margin:18px 0 6px; font-weight:500;
   }
   .catalog h2:first-child{margin-top:0}
@@ -60,7 +60,7 @@
   .catalog li{margin:0}
   .catalog button{
     all:unset; display:block; width:100%; cursor:pointer; color:var(--ink);
-    padding:3px 0 3px 12px; border-left:2px solid transparent;
+    padding:3px 0 3px 12px; border-left:2px solid transparent; text-transform:lowercase;
   }
   .catalog button:hover, .catalog button:focus-visible{color:var(--accent); border-color:var(--dim)}
   .catalog button.on{color:var(--accent); border-color:var(--accent); font-weight:600}
@@ -157,7 +157,7 @@
       grid-template-areas:"stage" "readout" "colophon";
     }
     .layout .colophon{grid-column:1; grid-area:colophon}
-    main{grid-area:stage; position:sticky; top:60px; background:var(--bg); z-index:10; padding-top:4px}
+    main{grid-area:stage; position:sticky; top:var(--header-h,120px); background:var(--bg); z-index:10; padding-top:4px}
     .readout{grid-area:readout}
     .catalog{
       position:fixed; inset:0 auto 0 0; width:min(320px,84vw); z-index:200;
@@ -628,6 +628,18 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   backdrop.addEventListener("click", closeCatalog);
   catalogCloseBtn.addEventListener("click", closeCatalog);
   document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeCatalog(); });
+
+  // Sticky main{top} on mobile must match the sticky header's real rendered height --
+  // the header wraps to two rows there (title row, then the subtitle on its own line),
+  // so a hardcoded px guess drifts out of sync and the header ends up painting over the
+  // top of the glyph (and whichever label sits highest, e.g. finial/x-height) once the
+  // page is scrolled. Measure it instead of guessing, and re-measure on resize/rotate.
+  const headerEl = document.querySelector("header");
+  function syncHeaderHeight(){
+    document.documentElement.style.setProperty("--header-h", headerEl.offsetHeight + "px");
+  }
+  syncHeaderHeight();
+  window.addEventListener("resize", syncHeaderHeight);
 
   // identity.md first: who the cartographer is, before anything else -- the front
   // door, not the empty placeholder.
