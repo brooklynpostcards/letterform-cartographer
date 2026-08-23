@@ -547,7 +547,7 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   };
   async function renderDoc(path){
     const doc = await loadDoc(path);
-    hint.textContent = " ";
+    hint.innerHTML = 'Hover a part of the letter — each card loads live from <code>objects/*.md</code>';
     readout.classList.remove("is-ghost");
     readout.innerHTML =
       `<span class="src">${doc.path}</span>
