@@ -309,11 +309,6 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   // as the clipped element's own d/transform (raw, un-flipped y-up font units) -- not the
   // parent's flipped screen space. See reference/decisions.md.
   const SHAPE_KINDS = new Set(["rect","circle","ellipse"]);
-  // A hooked stroke (spur, and anything like it) can't be hugged by one convex shape without
-  // either bleeding past the true ink or shrinking to a sliver -- so a region may carry a
-  // second shape (region2) covering the other lobe. The clip-path unions them for free (SVG
-  // clipPath content is a union of its children); hotspots and defs both walk this list.
-  function regionsOf(m){ return [m.region, m.region2].filter(r=>r && SHAPE_KINDS.has(r.shape)); }
   // flipY=true builds the same shape in plain screen space (used by hotspots, which sit
   // directly in the scene with no scale(1,-1) of their own) instead of the raw font-unit
   // space the clip-path defs need (see the coordinate-space note below).
@@ -335,10 +330,10 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   // it's a straight vertical stroke, so a rect is the anatomically correct shape there.
   const defs = el("defs");
   cards.forEach(c=>{
-    const regions = regionsOf(c.meta);
-    if(!regions.length) return;
+    const r = c.meta.region;
+    if(!r || !SHAPE_KINDS.has(r.shape)) return;
     const cp = el("clipPath",{id:"clip-"+c.meta.id, clipPathUnits:"userSpaceOnUse"});
-    regions.forEach(r=>cp.appendChild(regionShapeEl(r)));
+    cp.appendChild(regionShapeEl(r));
     defs.appendChild(cp);
   });
   S.appendChild(defs);
@@ -446,28 +441,27 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   // ---- hotspots (drawn last) ----
   cards.forEach(c=>{
     const m = c.meta, r = m.region;
-    const regions = regionsOf(m);
-    let hitShapes = [];
-    if(r && r.shape==="counter") hitShapes = [el("path",{d:g.counter, transform:"scale(1,-1)"})];
-    else if(r && r.shape==="metric") hitShapes = [el("rect",{x:576, y:-r.y-26, width:250, height:52})];
-    else if(regions.length) hitShapes = regions.map(rr =>
-      rr.shape==="circle" ? el("circle",{cx:rr.cx, cy:-rr.cy, r:rr.r+6}) : regionShapeEl(rr, true)); // +6: easier to hit
-    else if(m.id==="foot-serif") hitShapes = [el("rect",{x:gx-8,y:gy-8,width:gw+16,height:gh+16})];
-    else return;
+    let hs;
+    if(r && r.shape==="circle") hs = el("circle",{cx:r.cx, cy:-r.cy, r:r.r+6}); // +6: easier to hit
+    else if(r && (r.shape==="ellipse" || r.shape==="rect")) hs = regionShapeEl(r, true);
+    else if(r && r.shape==="counter") hs = el("path",{d:g.counter, transform:"scale(1,-1)"});
+    else if(r && r.shape==="metric"){
+      hs = el("rect",{x:576, y:-r.y-26, width:250, height:52});
+    } else if(m.id==="foot-serif"){
+      hs = el("rect",{x:gx-8,y:gy-8,width:gw+16,height:gh+16});
+    } else return;
+    hs.setAttribute("class","hotspot");
+    hs.setAttribute("tabindex","0");
+    hs.setAttribute("role","button");
+    hs.setAttribute("aria-label",m.name);
     // No pointerleave/blur handler on purpose: the last hovered or focused part stays
     // shown when the pointer moves away, so the reader can actually read the card
     // instead of it vanishing the instant they're not directly over the hotspot.
     const on = ()=>show(m.id);
-    hitShapes.forEach((hs,i)=>{
-      hs.setAttribute("class","hotspot");
-      hs.setAttribute("tabindex", i===0 ? "0" : "-1"); // one tab stop per part, not per lobe
-      hs.setAttribute("role","button");
-      hs.setAttribute("aria-label",m.name);
-      hs.addEventListener("pointerenter",on);
-      hs.addEventListener("focus",on);
-      hs.addEventListener("click",e=>{e.preventDefault();on();});
-      S.appendChild(hs);
-    });
+    hs.addEventListener("pointerenter",on);
+    hs.addEventListener("focus",on);
+    hs.addEventListener("click",e=>{e.preventDefault();on();});
+    S.appendChild(hs);
   });
 
   function fmtRegion(r){
@@ -476,13 +470,11 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     return `{ ${parts} }`;
   }
   function rawFrontmatter(m){
-    const rows = [
+    return [
       ["id", m.id], ["type", m.type], ["status", m.status],
       ["anchor", m.anchor ? `[${m.anchor.join(", ")}]` : "null"],
       ["region", fmtRegion(m.region)]
-    ];
-    if(m.region2) rows.push(["region2", fmtRegion(m.region2)]);
-    return rows.map(([k,v])=>`<b>${k}:</b> ${v}`).join("\n");
+    ].map(([k,v])=>`<b>${k}:</b> ${v}`).join("\n");
   }
 
   const METRIC_IDS = {"x-height":["xh"], "baseline":["bl"], "overshoot":["os","os2"]};
