@@ -4,7 +4,7 @@ name: Ball terminal
 type: stroke-ending
 status: live
 anchor: [117, 342]
-region: {shape: circle, cx: 112, cy: 342, r: 56}
+region: {shape: circle, cx: 117, cy: 342, r: 74}
 ---
 
 # Ball terminal
