@@ -188,51 +188,50 @@
       padding:10px 14px; min-height:44px; border-radius:6px; width:max-content;
     }
   }
+.lf-lang{font:inherit;font-size:12px;background:transparent;color:inherit;border:1px solid currentColor;border-radius:4px;padding:2px 4px;margin-left:10px;opacity:.7}.lf-lang[hidden]{display:none}
 </style>
 </head>
 <body>
 
 <header>
-  <button type="button" class="hamburger" id="hamburger" aria-label="Open catalog" aria-expanded="false">&#9776;</button>
-  <h1>anatomy of a</h1>
-  <p>Clarendon LT Std Roman — a cartographer catalog</p>
+  <button type="button" class="hamburger" id="hamburger" aria-label="Open catalog" data-i18n-aria="open_catalog" aria-expanded="false">&#9776;</button>
+  <h1 data-i18n="h1">anatomy of a</h1>
+  <p data-i18n="sub">Clarendon LT Std Roman — a cartographer catalog</p><select id="lf-lang" aria-label="Language" class="lf-lang"></select>
 </header>
 
 <div class="backdrop" id="backdrop"></div>
 
 <div class="layout">
   <aside class="catalog" id="catalog">
-    <button type="button" class="catalog-close" id="catalog-close">&times; Close</button>
-    <h2>Territory</h2>
+    <button type="button" class="catalog-close" id="catalog-close" data-i18n="close">&times; Close</button>
+    <h2 data-i18n="territory">Territory</h2>
     <ul>
       <li><button type="button" data-doc="identity.md">identity.md</button></li>
       <li><button type="button" data-doc="rules.md">rules.md</button></li>
       <li><button type="button" data-doc="examples.md">examples.md</button></li>
       <li><button type="button" data-doc="readme.md">readme.md</button></li>
     </ul>
-    <h2>Reference</h2>
+    <h2 data-i18n="reference">Reference</h2>
     <ul>
       <li><button type="button" data-doc="reference/card-types.md">card-types.md</button></li>
       <li><button type="button" data-doc="reference/naming-collisions.md">naming-collisions.md</button></li>
       <li><button type="button" data-doc="reference/walk-order.md">walk-order.md</button></li>
       <li><button type="button" data-doc="reference/decisions.md">decisions.md</button></li>
     </ul>
-    <h2>Objects (11)</h2>
+    <h2 data-i18n="objects">Objects (11)</h2>
     <ul id="catalog-objects"></ul>
   </aside>
 
   <main>
     <svg class="stage" id="stage" viewBox="-580 -760 1730 964" role="img"
-         aria-label="Interactive anatomical diagram of the lowercase letter a in Clarendon, sourced live from the objects/ markdown cards">
+         aria-label="Interactive anatomical diagram of the lowercase letter a in Clarendon, sourced live from the objects/ markdown cards" data-i18n-aria="stage">
       <g id="scene"></g>
     </svg>
-    <p class="hint" id="hint">Hover a part of the letter, or pick one from the catalog</p>
+    <p class="hint" id="hint" data-i18n="hint_start">Hover a part of the letter, or pick one from the catalog</p>
   </main>
 
   <div class="readout" id="readout" aria-live="polite">
-    <p class="empty">Every card names what a change <strong>hits</strong> — and the neighbour it
-      <strong>does not hit</strong>, even though that is the word everyone reaches for.
-      The faint marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>
+    <p class="empty" data-i18n="empty">Every card names what a change <strong>hits</strong> — and the neighbour it <strong>does not hit</strong>, even though that is the word everyone reaches for. The faint marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>
   </div>
 </div>
 
@@ -240,6 +239,26 @@
 const CARD_FILES = ["stem","bowl","finial","ball-terminal","spur","counter",
                      "aperture","x-height","baseline","overshoot","foot-serif"];
 const OBJ_DIR = "../objects/";
+// ---- languages (artifactdata item 288, 2026-11-14) ----
+const LANGS = {en:"English",es:"Español",fr:"Français",it:"Italiano",pt:"Português",de:"Deutsch",ja:"日本語",zh:"中文"};
+const UI = {"en": {"title": "Anatomy of a — Clarendon", "h1": "anatomy of a", "sub": "Clarendon LT Std Roman — a cartographer catalog", "open_catalog": "Open catalog", "close": "&times; Close", "territory": "Territory", "reference": "Reference", "objects": "Objects (11)", "stage": "Interactive anatomical diagram of the lowercase letter a in Clarendon, sourced live from the objects/ markdown cards", "hint_start": "Hover a part of the letter, or pick one from the catalog", "hint_cards": "Hover a part of the letter — each card loads live from <code>objects/*.md</code>", "empty": "Every card names what a change <strong>hits</strong> — and the neighbour it <strong>does not hit</strong>, even though that is the word everyone reaches for. The faint marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.", "ghost_caps": "GHOST", "doc_kind": "Instructions for reading the map, not a part of the letter", "st:live": "live", "st:live-derived": "live-derived", "st:leftover": "leftover", "st:ghost": "ghost", "ty:stroke": "stroke", "ty:stroke-ending": "stroke-ending", "ty:metric": "metric", "ty:negative-space": "negative-space", "ty:correction": "correction", "role:identity.md": "who this cartographer is, and who reads the map it makes", "role:rules.md": "how a part earns a card, and what live/leftover/ghost mean here", "role:examples.md": "the catalog itself — this diagram is that catalog, made hoverable", "role:readme.md": "how a stranger, human or model, is meant to walk this repo", "role:reference/card-types.md": "the closed set of card shapes a part can take", "role:reference/naming-collisions.md": "words a reader reaches for that mean something else here", "role:reference/walk-order.md": "the exact hop order: catalog, one card, stop", "role:reference/decisions.md": "judgment calls made while mapping this letter, and why"}};
+const QLANG = new URLSearchParams(location.search).get("lang");
+const LANG = (()=>{ if(LANGS[QLANG]) return QLANG; let c=""; try{ c=localStorage.getItem("lf-lang")||""; }catch(e){}
+  if(LANGS[c]) return c; const n=(navigator.language||"en").slice(0,2).toLowerCase(); return LANGS[n]?n:"en"; })();
+const T = k => (UI[LANG]&&UI[LANG][k]) || UI.en[k] || k;
+async function fetchLang(path){   // path from the repo root, e.g. objects/stem.md
+  if(LANG!=="en"){ try{ const r=await fetch("../i18n/"+LANG+"/"+path); if(r.ok) return r.text(); }catch(e){} }
+  return (await fetch("../"+path)).text();
+}
+function goLang(c){ if(!LANGS[c]||c===LANG) return; const u=new URL(location.href); u.searchParams.set("lang",c); location.replace(u.href); }
+addEventListener("message",e=>{ if(!/^(https:\/\/(www\.)?artifactdata\.net|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?)$/.test(e.origin)) return;
+  const d=e.data; if(d&&d.type==="lang") goLang(d.lang); });
+document.documentElement.lang = LANG; document.title = T("title");
+document.querySelectorAll("[data-i18n]").forEach(e=>e.innerHTML=T(e.dataset.i18n));
+document.querySelectorAll("[data-i18n-aria]").forEach(e=>e.setAttribute("aria-label",T(e.dataset.i18nAria)));
+{ const sel=document.getElementById("lf-lang"); sel.innerHTML=Object.entries(LANGS).map(([c,n])=>`<option value="${c}" lang="${c}">${n}</option>`).join("");
+  sel.value=LANG; sel.onchange=()=>{ try{ localStorage.setItem("lf-lang",sel.value); }catch(e){} goLang(sel.value); };
+  if(LANGS[QLANG] && window.self!==window.top) sel.hidden=true; /* framed with ?lang: the parent site's switch rules */ }
 
 // ---- tiny frontmatter + markdown parsers (closed, known input shape) ----
 function parseFrontmatter(raw){
@@ -291,8 +310,7 @@ function mdToHtml(body, opts={}){
 const cache = {};
 async function loadCard(id){
   if(cache[id]) return cache[id];
-  const res = await fetch(OBJ_DIR + id + ".md");
-  const raw = await res.text();
+  const raw = await fetchLang("objects/" + id + ".md");
   const parsed = parseFrontmatter(raw);
   parsed.path = "objects/" + id + ".md";
   cache[id] = parsed;
@@ -408,7 +426,7 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     if(!m.anchor || !LAYOUT[m.id]) return;
     const [ax,ay] = m.anchor, [lx,ly] = LAYOUT[m.id].label, side = LAYOUT[m.id].side;
     const sx = ax, sy = -ay;
-    const art = L[m.name];
+    const art = L[Object.keys(L).find(k=>k.toLowerCase().replace(/ /g,"-")===m.id)];  // drawn labels: English outlines, keyed by English name
     const wpx = art ? art.w*LSCALE : 200;
     // anchor point on the label's near edge, not its center
     const labelAnchorX = side==="left" ? lx + wpx + 14 : side==="right" ? lx - 14 : lx + wpx/2;
@@ -499,8 +517,8 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     catalog.querySelectorAll('button.on').forEach(b=>b.classList.remove("on"));
     current=null;
     readout.classList.remove("is-ghost");
-    readout.innerHTML = '<p class="empty">Every card names what a change <strong>hits</strong> — and the neighbour it <strong>does not hit</strong>, even though that is the word everyone reaches for. The faint marker near the base is a <strong>ghost</strong>: a part with a name and nothing behind it.</p>';
-    hint.innerHTML = 'Hover a part of the letter — each card loads live from <code>objects/*.md</code>';
+    readout.innerHTML = '<p class="empty">' + T('empty') + '</p>';
+    hint.innerHTML = T('hint_cards');
   }
   function render(id){
     const card = byId[id]; if(!card) return;
@@ -519,7 +537,7 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     readout.innerHTML =
       `<span class="src">${card.path}</span>
        <span class="raw">${rawFrontmatter(m)}</span>
-       <span class="kind">${m.status}${isGhost?" — GHOST":""} · ${m.type}</span>
+       <span class="kind">${T("st:"+m.status)}${isGhost?" — "+T("ghost_caps"):""} · ${T("ty:"+m.type)}</span>
        <h2>${m.name}</h2>
        <div class="body">${bodyHtml}</div>`;
     wireBodyLinks(readout);
@@ -536,8 +554,7 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   const docCache = {};
   async function loadDoc(path){
     if(docCache[path]) return docCache[path];
-    const res = await fetch("../" + path);
-    const raw = await res.text();
+    const raw = await fetchLang(path);
     const doc = {...parseFrontmatter(raw), path};
     docCache[path] = doc;
     return doc;
@@ -557,12 +574,12 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
   };
   async function renderDoc(path){
     const doc = await loadDoc(path);
-    hint.innerHTML = 'Hover a part of the letter — each card loads live from <code>objects/*.md</code>';
+    hint.innerHTML = T('hint_cards');
     readout.classList.remove("is-ghost");
     readout.innerHTML =
       `<span class="src">${doc.path}</span>
-       <span class="kind">Instructions for reading the map, not a part of the letter</span>
-       <p class="doc-role">${DOC_ROLE[path] || ""}</p>
+       <span class="kind">${T("doc_kind")}</span>
+       <p class="doc-role">${T("role:"+path)}</p>
        <div class="body">${mdToHtml(doc.body)}</div>`;
     wireBodyLinks(readout);
   }
@@ -596,7 +613,7 @@ Promise.all([dataP, labelsP, Promise.all(CARD_FILES.map(loadCard))]).then(([data
     if(m.status==="ghost") row.className = "ghost-row";
     const btn = document.createElement("button");
     btn.type = "button"; btn.dataset.card = id;
-    btn.textContent = m.name + (m.status==="ghost" ? " (ghost)" : m.status==="leftover" ? " (leftover)" : "");
+    btn.textContent = m.name + (m.status==="ghost" ? " ("+T("st:ghost")+")" : m.status==="leftover" ? " ("+T("st:leftover")+")" : "");
     row.appendChild(btn);
     objList.appendChild(row);
   });
